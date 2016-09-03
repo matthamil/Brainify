@@ -1,0 +1,25 @@
+{
+  "name": "world-wide-travel",
+  "description": "Angular exercise at NSS",
+  "main": "Gruntfile.js",
+  "authors": [
+    "Matt Hamil <j.matthew.hamil@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/matthamil/front-end-milestones-exercises",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.7",
+    "angular-route": "^1.5.7",
+    "angularfire": "^2.0.1",
+    "bootstrap": "^3.3.6",
+    "firebase": "^3.2.0",
+    "jquery": "^3.1.0"
+  }
+}
