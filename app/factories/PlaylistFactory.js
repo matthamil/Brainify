@@ -12,13 +12,16 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
         console.log('Logged in user: ', currentUser);
         user = currentUser;
       })
+      .catch((error) => {
+        throw new Error('No signed in user.');
+      })
       .then((currentUser) => {
         // Find the user's playlists
         return Spotify.getUserPlaylists(user.id);
       })
       .catch((error) => {
         // If the user has no playlists
-        console.error('Error: No playlists found!');
+        return $q.reject(new Error('No playlists found.'));
       })
       .then((playlistsObj) => {
         // Save the users playlists

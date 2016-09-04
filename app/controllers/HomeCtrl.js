@@ -2,9 +2,9 @@
 
 /**
  * Home Controller
- * Dependencies: $scope, UserPlaylists (Factory), Spotify (from angular-spotify)
+ * Dependencies: $scope, $location, UserPlaylists (Factory), Spotify (from angular-spotify)
  */
-app.controller('HomeCtrl', function($scope, UserPlaylists, Spotify) {
+app.controller('HomeCtrl', function($scope, $location, UserPlaylists, Spotify) {
   // Boolean to control loading animation
   $scope.showSpinner = true;
 
@@ -18,6 +18,10 @@ app.controller('HomeCtrl', function($scope, UserPlaylists, Spotify) {
         $scope.user = user;
         // Disble the loading animation
         $scope.showSpinner = false;
+      })
+      .catch((error) => {
+        console.error(error);
+        $location.url('/');
       });
   };
 });
