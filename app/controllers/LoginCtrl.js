@@ -2,7 +2,7 @@
 
 /**
  * Login Controller
- * Dependencies: $scope, $location, $cookies, Spotify (from angular-spotify)
+ * Dependencies: $scope, $location, Spotify (from angular-spotify)
  */
 app.controller('LoginCtrl', function($scope, $location, Spotify) {
   /**
