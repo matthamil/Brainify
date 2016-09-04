@@ -13,7 +13,7 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
         user = currentUser;
       })
       .catch((error) => {
-        throw new Error('No signed in user.');
+        return $q.reject(new Error('No signed in user.'));
       })
       .then((currentUser) => {
         // Find the user's playlists
