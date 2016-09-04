@@ -1,12 +1,12 @@
 'use strict';
 
-let app = angular.module('Brainify', ['spotify', 'ngRoute']);
+let app = angular.module('Brainify', ['ngRoute', 'spotify']);
 
 app.config(function($routeProvider) {
   $routeProvider
-    .when('/', {
+    .when('/landing-page', {
       templateUrl: 'partials/landing-page.html',
       controller: 'LoginCtrl'
     })
-    .otherwise('/');
+    .otherwise('/landing-page');
 });

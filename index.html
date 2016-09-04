@@ -6,10 +6,7 @@
     <link rel="stylesheet" href="lib/bower_components/bootstrap/dist/css/bootstrap.min.css" media="screen" title="no title">
   </head>
   <body ng-app="Brainify">
-    <main ng-controller="LoginCtrl" class="container">
-      <button type="button" class="btn btn-default" ng-click="login()">Login</button>
-      <button type="button" class="btn btn-default" ng-click="userTest()">Get Current User</button>
-      <button type="button" class="btn btn-default" ng-click="audioFeatureTest()">Get Audio Features</button>
+    <main ng-view>
     </main>
     <!-- Third Party Libraries -->
     <script src="lib/bower_components/angular/angular.min.js"></script>
