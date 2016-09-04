@@ -2,9 +2,9 @@
 
 /**
  * Login Controller
- * Dependencies: $scope, Spotify (from angular-spotify)
+ * Dependencies: $scope, $location, Spotify (from angular-spotify)
  */
-app.controller('LoginCtrl', function($scope, Spotify) {
+app.controller('LoginCtrl', function($scope, $location, Spotify) {
   /**
    * Creates a popup window for a user to login and saves the auth token to local storage.
    * This function relies on app/SpotifyConfig.js which is not included in the project repo.
@@ -19,15 +19,6 @@ app.controller('LoginCtrl', function($scope, Spotify) {
    */
   $scope.userTest = () => {
     Spotify.getCurrentUser().then((data) => {
-      console.log(data);
-    });
-  };
-
-  /**
-   * Logs the audio features for the test song
-   */
-  $scope.audioFeatureTest = () => {
-    Spotify.getTrackAudioFeatures('0eGsygTp906u18L0Oimnem').then(function (data) {
       console.log(data);
     });
   };

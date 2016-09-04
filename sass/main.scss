@@ -1,0 +1,181 @@
+$button-color: #7c25f8;
+$navbar-color: #351053;
+$navbar-transparent: rgba(darken($navbar-color, 10%), 0.76);
+
+@mixin centerer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* CSS Reset */
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* End CSS Reset */
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.clearfix {
+  clear: both;
+}
+
+#landing-page-wrapper {
+  height: 100vh;
+  color: white;
+  background-image: url(../img/landing-page-background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  h1 {
+    font-weight: 800;
+    font-size: 4.5em;
+    display: block;
+    margin: 7.5% auto 4%;
+    max-width: 50%;
+    line-height: 1.05;
+  }
+}
+
+#landing-page-navbar {
+  background-color: $navbar-transparent;
+  min-height: 15vh;
+  font-size: 1.25em;
+  padding: 0 10%;
+
+  a {
+    color: white;
+    // float: right;
+  }
+
+  li {
+    display: block;
+    float: right;
+    margin: 5.5vh 20px;
+  }
+
+  #navbar-logo-wrapper {
+    float: left;
+    margin: 3vh 0;
+  }
+
+  #navbar-logo {
+    height: 8vh; width: 8vh;
+    float: left;
+  }
+
+  img {
+    display: inline-block;
+  }
+
+  h2 {
+    float: left;
+    font-size: 1.25em;
+    font-weight: 700;
+    display: block;
+    letter-spacing: -1px;
+    margin: 2.25vh 0;
+    margin-left: 5px;
+  }
+
+}
+
+.purple-btn {
+  background-color: $button-color;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+  border-radius: 60px;
+  padding: 20px 75px;
+  border: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    background-color: darken($button-color, 10%);
+  }
+
+  &:active {
+    background-color: darken($button-color, 20%);
+  }
+}
+
+.landing-page-btn {
+  font-weight: 700;
+  display: block;
+  margin: 0 auto;
+  font-size: 1.5em;
+  margin-bottom: 10vh;
+}
+
+.landing-page-tab-wrapper {
+  display: block;
+  margin: 0 auto;
+  width: 8vw;
+
+  .active-tab {
+    background-color: white;
+  }
+}
+
+.landing-page-tab {
+  width: 1.25vw; height: 1.25vw;
+  background-color: lightgray;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 2px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
