@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Login Controller
+ * Dependencies: $scope, Spotify (from angular-spotify)
+ */
 app.controller('LoginCtrl', function($scope, Spotify) {
   /**
    * Creates a popup window for a user to login and saves the auth token to local storage.
