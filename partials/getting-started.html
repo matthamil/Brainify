@@ -1,6 +1,6 @@
 <span us-spinner spinner-on="showSpinner"></span>
 
-<div id="getting-started-wrapper" ng-init="loadUserInfo()">
+<div id="getting-started-wrapper" ng-init="loadUserInfo()" ng-show="!showSpinner">
   <nav>
     <img ng-src="{{user.images[0].url}}"/>
     <ul>
