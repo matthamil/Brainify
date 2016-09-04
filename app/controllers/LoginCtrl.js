@@ -13,7 +13,12 @@ app.controller('LoginCtrl', function($scope, $location, $routeParams, Spotify) {
   $scope.login = () => {
     Spotify.login()
       .then((data) => {
+        // Reroute the user once logged in
         $location.url('/home');
+      })
+      .catch((error) => {
+        console.error(error);
+        $location.url('/');
       });
   };
 });
