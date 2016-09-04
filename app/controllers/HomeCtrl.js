@@ -2,7 +2,7 @@
 
 /**
  * Home Controller
- * Dependencies: $scope, Spotify (from angular-spotify)
+ * Dependencies: $scope, UserPlaylists (Factory), Spotify (from angular-spotify)
  */
 app.controller('HomeCtrl', function($scope, UserPlaylists, Spotify) {
   // Boolean to control loading animation
