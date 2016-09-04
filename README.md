@@ -14,3 +14,7 @@ bower install
 ```
 
 Run `grunt` in the `lib` folder to build Brainify locally.
+
+## Machine learning techniques
+
+Brainify relies on [Synaptic.js](http://synaptic.juancazala.com/#/) to create neural networks that learn a user's music preferences.
