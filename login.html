@@ -5,6 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title></title>
   <script>
+    /*
+      This script runs when the user attempts to log in via Spotify.
+      The user's authentication token will be saved to local storage
+      upon succesful login. The window will close upon success or failure.
+     */
     window.onload = function () {
       var hash = window.location.hash;
       if (window.location.search.substring(1).indexOf("error") !== -1) {
