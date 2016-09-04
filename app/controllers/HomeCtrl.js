@@ -20,6 +20,7 @@ app.controller('HomeCtrl', function($scope, $location, UserPlaylists, Spotify) {
         $scope.showSpinner = false;
       })
       .catch((error) => {
+        // If no user is found, redirect to landing page
         console.error(error);
         $location.url('/');
       });
