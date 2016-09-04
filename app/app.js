@@ -1,6 +1,6 @@
 'use strict';
 
-let app = angular.module('Brainify', ['ngRoute', 'spotify']);
+let app = angular.module('Brainify', ['ngRoute', 'spotify', 'angularSpinner']);
 
 app.config(function($routeProvider) {
   $routeProvider
