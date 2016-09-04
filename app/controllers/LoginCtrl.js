@@ -14,7 +14,7 @@ app.controller('LoginCtrl', function($scope, $location, Spotify) {
     Spotify.login()
       .then((data) => {
         // Reroute the user once logged in
-        $location.url('/home');
+        $location.url('/getting-started');
       })
       .catch((error) => {
         // If the user closes the login popup, redirect to landing page

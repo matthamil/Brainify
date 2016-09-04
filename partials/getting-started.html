@@ -1,0 +1,26 @@
+<span us-spinner spinner-on="showSpinner"></span>
+
+<div id="getting-started-wrapper" ng-init="loadUserInfo()">
+  <nav>
+    <img ng-src="{{user.images[0].url}}"/>
+    <ul>
+      <li>{{user.display_name}}</li>
+    </ul>
+  </nav>
+  <div class="content-area">
+    <h1>
+      Select a<br/>
+      playlist<br/>
+      to get<br/>
+      started.<br/>
+    </h1>
+  </div>
+  <div class="playlists-area">
+    <playlist ng-repeat="playlist in user.playlists">
+      <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}"/>
+      <ul>
+        <li>{{playlist.name}}</li>
+      </ul>
+    </playlist>
+  </div>
+</div>

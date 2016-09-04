@@ -1,10 +1,10 @@
 'use strict';
 
 /**
- * Home Controller
+ * Getting Started Controller
  * Dependencies: $scope, $location, UserPlaylists (Factory), Spotify (from angular-spotify)
  */
-app.controller('HomeCtrl', function($scope, $location, UserPlaylists, Spotify) {
+app.controller('GettingStartedCtrl', function($scope, $location, UserPlaylists, Spotify) {
   // Boolean to control loading animation
   $scope.showSpinner = true;
 
