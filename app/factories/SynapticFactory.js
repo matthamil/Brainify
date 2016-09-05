@@ -33,20 +33,6 @@ app.factory('Synaptic', (Spotify) => {
     }
   };
 
-  let constructVectorFromObj = (obj) => {
-    let featureArray = [];
-    featureArray.push(
-      obj.acousticness,
-      obj.danceability,
-      obj.energy,
-      obj.instrumentalness,
-      obj.liveness,
-      obj.speechiness,
-      obj.valence
-    );
-    return featureArray;
-  };
-
   let makePrediction = (song) => {
     let results = [];
 

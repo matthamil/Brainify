@@ -28,5 +28,10 @@ app.controller('GettingStartedCtrl', function($scope, $location, UserPlaylists, 
 
   $scope.setSelectedPlaylist = (playlistId) => {
     UserPlaylists.setSelectedPlaylist(playlistId);
+    // $location.url('/test');
+  };
+
+  $scope.test = () => {
+    UserPlaylists.getAudioFeaturesForPlaylist(UserPlaylists.getSelectedPlaylist());
   };
 });

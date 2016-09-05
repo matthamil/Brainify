@@ -74,7 +74,7 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
     // Prevent the playlist from being redefined if it is already
     // pointing to the correct playlist
     if (playlist) {
-      if (playlistId === playlist["0"].id) {
+      if (playlistId === playlist.id) {
         return;
       }
     }
@@ -82,18 +82,52 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
     // Locate the correct playlist by id
     playlist = user.playlists.filter((playlist) => {
       return playlist.id === playlistId;
-    });
+    })[0];
 
-    console.log('Selected playlist:', playlist["0"].name);
+    console.log('Selected playlist:', playlist.name);
     console.log(playlist);
   };
 
   // Returns the selected playlist
   let getSelectedPlaylist = () => playlist;
 
+  let constructVectorFromObj = (obj) => {
+    let featureArray = [];
+    featureArray.push(
+      obj.acousticness,
+      obj.danceability,
+      obj.energy,
+      obj.instrumentalness,
+      obj.liveness,
+      obj.speechiness,
+      obj.valence
+    );
+    return featureArray;
+  };
+
+  let getAudioFeaturesForPlaylist = (playlist) => {
+    return Spotify.getTracksAudioFeatures(
+        playlist.songList.items.map((song) => {
+          return song.track.id;
+        })
+      )
+      .then((data) => {
+        // Convert the object data into vectors
+        let audioFeaturesArray = data.audio_features.map((feature, index) => {
+          let vector = constructVectorFromObj(feature);
+          playlist.songList.items[index].track.features = vector;
+          return vector;
+        });
+
+        console.log(audioFeaturesArray);
+        console.log(playlist);
+      });
+  };
+
   return {
     getUserInfo,
     setSelectedPlaylist,
-    getSelectedPlaylist
+    getSelectedPlaylist,
+    getAudioFeaturesForPlaylist
   };
 });

@@ -8,9 +8,13 @@ app.config(function($routeProvider) {
       templateUrl: 'partials/landing-page.html',
       controller: 'LoginCtrl'
     })
-    .when ('/getting-started', {
+    .when('/getting-started', {
       templateUrl: 'partials/getting-started.html',
       controller: 'GettingStartedCtrl'
+    })
+    .when('/test', {
+      templateUrl: 'partials/learning-test.html',
+      controller: 'LearningCtrl'
     })
     .otherwise('/');
 });
