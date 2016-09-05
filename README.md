@@ -22,7 +22,6 @@ function SpotifyAPISetup(SpotifyProvider) {
 }
 
 module.exports = SpotifyAPISetup;
-
 ```
 
 Install the dependencies:
