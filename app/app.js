@@ -1,20 +1,22 @@
 'use strict';
 
-let app = angular.module('Brainify', ['ngRoute', 'angularSpinner','spotify']);
+let angular = require('angular');
 
-app.config(function($routeProvider) {
-  $routeProvider
-    .when('/', {
-      templateUrl: 'partials/landing-page.html',
-      controller: 'LoginCtrl'
-    })
-    .when('/getting-started', {
-      templateUrl: 'partials/getting-started.html',
-      controller: 'GettingStartedCtrl'
-    })
-    .when('/test', {
-      templateUrl: 'partials/learning-test.html',
-      controller: 'LearningCtrl'
-    })
-    .otherwise('/');
-});
+// Dependencies for Angular app
+require('angular-route');
+require('angular-spinner');
+require('angular-spotify');
+
+// Main Angular module
+let app = angular.module('Brainify', ['ngRoute', 'angularSpinner', 'spotify']);
+
+// Loading Controllers
+require('./controllers');
+// Loading Factories
+require('./factories');
+
+// Routing
+app.config(require('./Routes'));
+
+// Spotify API Configuration
+app.config(require('./SpotifyConfig'));

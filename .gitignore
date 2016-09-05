@@ -1,5 +1,6 @@
 css
 .sass-cache
-lib/bower_components
-lib/node_modules
+bower_components
+node_modules
 app/SpotifyConfig.js
+dist
