@@ -3,4 +3,5 @@ css
 bower_components
 node_modules
 app/SpotifyConfig.js
-dist
+dist/app.bundle.js
+dist/app.bundle.js
