@@ -4,7 +4,8 @@
  * Getting Started Controller
  * Dependencies: $scope, $location, UserPlaylists (Factory), Spotify (from angular-spotify)
  */
-app.controller('GettingStartedCtrl', function($scope, $location, UserPlaylists, Spotify) {
+
+function GettingStartedController($scope, $location, UserPlaylists, Spotify) {
   // Boolean to control loading animation
   $scope.showSpinner = true;
 
@@ -38,4 +39,6 @@ app.controller('GettingStartedCtrl', function($scope, $location, UserPlaylists, 
   $scope.test = () => {
     UserPlaylists.getAudioFeaturesForPlaylist(UserPlaylists.getSelectedPlaylist());
   };
-});
+}
+
+module.exports = GettingStartedController;

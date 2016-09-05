@@ -1,12 +1,12 @@
 {
-  "name": "world-wide-travel",
-  "description": "Angular exercise at NSS",
-  "main": "Gruntfile.js",
+  "name": "Brainify",
+  "description": "Capstone Project",
+  "main": "app/app.js",
   "authors": [
     "Matt Hamil <j.matthew.hamil@gmail.com>"
   ],
   "license": "ISC",
-  "homepage": "https://github.com/matthamil/front-end-milestones-exercises",
+  "homepage": "https://github.com/matthamil/Brainify",
   "ignore": [
     "**/.*",
     "node_modules",
