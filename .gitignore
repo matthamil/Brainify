@@ -5,3 +5,7 @@ node_modules
 app/SpotifyConfig.js
 dist/app.bundle.js
 dist/app.bundle.js
+
+git filter-branch --force --index-filter \
+'git rm --cached --ignore-unmatch dist' \
+--prune-empty --tag-name-filter cat -- --all
