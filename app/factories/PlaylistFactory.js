@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('UserPlaylists', ($q, $http, Spotify) => {
+function UserPlaylistsFactory($q, $http, Spotify) {
   // Stores the user object upon login
   let user;
 
@@ -146,4 +146,6 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
     getSelectedPlaylist,
     getAudioFeaturesForPlaylist
   };
-});
+}
+
+module.exports = UserPlaylistsFactory;

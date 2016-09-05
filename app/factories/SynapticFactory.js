@@ -1,17 +1,19 @@
 'use strict';
 
-app.factory('SynapticFactory', (Spotify) => {
+let syn = require('synaptic');
+
+function SynapticFactory(Spotify) {
   // Creating the layers in the network
-  let inputLayer = new Layer(7);
-  let hiddenLayer = new Layer(3);
-  let outputLayer = new Layer(1);
+  let inputLayer = new syn.Layer(7);
+  let hiddenLayer = new syn.Layer(3);
+  let outputLayer = new syn.Layer(1);
 
   // Connect the layers
   inputLayer.project(hiddenLayer);
   hiddenLayer.project(outputLayer);
 
   // Build the neural network
-  let myNetwork = new Network({
+  let myNetwork = new syn.Network({
     input: inputLayer,
     hidden: [hiddenLayer],
     output: outputLayer
@@ -58,4 +60,6 @@ app.factory('SynapticFactory', (Spotify) => {
     trainNetwork,
     makePrediction
   };
-});
+}
+
+module.exports = SynapticFactory;
