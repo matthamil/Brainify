@@ -86,6 +86,14 @@
     margin: 0 auto;
     margin-bottom: 0.5vh;
 
+    &:hover {
+      background-color: darken($lightergray, 10%);
+    }
+
+    &:active {
+      background-color: darken($lightergray, 20%);
+    }
+
     img {
       display: block;
       width: 6vh;
