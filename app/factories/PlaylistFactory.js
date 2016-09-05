@@ -47,7 +47,20 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
       });
   };
 
+  // Stores the user's selected playlist. Used to train a neural network.
+  let playlist;
+
+  // Used to cache the selected playlist
+  let setSelectedPlaylist = (playlistArray) => {
+    playlist = playlistArray;
+  };
+
+  // Returns the selected playlist
+  let getSelectedPlaylist = () => playlist;
+
   return {
-    getUserInfo
+    getUserInfo,
+    setSelectedPlaylist,
+    getSelectedPlaylist
   };
 });
