@@ -8,14 +8,30 @@ Brainify creates smart Spotify playlists using machine learning techniques.
 
 ## Getting Started
 
-Download or clone the project to your machine.
+Download or clone the project to your machine. You will need a [Spotify API key](https://developer.spotify.com/my-applications/#!/applications) to run the project locally.
+
+Create a `SpotifyConfig.js` file inside the `app` directory with the following:
+
+```
+'use strict';
+
+function SpotifyAPISetup(SpotifyProvider) {
+  SpotifyProvider.setClientId('YOUR_CLIENT_ID_FROM_SPOTIFY');
+  SpotifyProvider.setRedirectUri('YOUR_REDIRECT_URI');
+  SpotifyProvider.setScope('user-read-private playlist-read-private playlist-modify-private playlist-modify-public');
+}
+
+module.exports = SpotifyAPISetup;
+
+```
+
+Install the dependencies:
 
 ```
 npm install
-bower install
 ```
 
-Run `grunt` in the `lib` folder to build Brainify locally.
+Run `npm run bundle`to build Brainify locally.
 
 ## Machine learning techniques
 
