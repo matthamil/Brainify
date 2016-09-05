@@ -25,4 +25,8 @@ app.controller('GettingStartedCtrl', function($scope, $location, UserPlaylists, 
         $location.url('/');
       });
   };
+
+  $scope.setSelectedPlaylist = (playlistId) => {
+    UserPlaylists.setSelectedPlaylist(playlistId);
+  };
 });
