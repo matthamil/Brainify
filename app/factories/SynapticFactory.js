@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('Synaptic', (Spotify) => {
+app.factory('SynapticFactory', (Spotify) => {
   // Creating the layers in the network
   let inputLayer = new Layer(7);
   let hiddenLayer = new Layer(3);
@@ -17,6 +17,11 @@ app.factory('Synaptic', (Spotify) => {
     output: outputLayer
   });
 
+  /**
+   * Trains the neural network with songs
+   * @param  {Array<Float>} playlist   Song features for the playlist
+   * @param  {Array<Float>} dummySongs Song features for nonplaylist songs
+   */
   let trainNetwork = (playlist, dummySongs) => {
     // Training the network
     let learningRate = 0.3;
@@ -33,6 +38,12 @@ app.factory('Synaptic', (Spotify) => {
     }
   };
 
+  /**
+   * Predicts if the song should be in the playlist.
+   * The neural network MUST be trained prior.
+   * @param  {Array<Float>} song Song features array
+   * @return {Array<Integer>} Array with [0,1] (fits playlist) or [1,0] (does not fit)
+   */
   let makePrediction = (song) => {
     let results = [];
 
@@ -44,6 +55,7 @@ app.factory('Synaptic', (Spotify) => {
   };
 
   return {
-
+    trainNetwork,
+    makePrediction
   };
 });

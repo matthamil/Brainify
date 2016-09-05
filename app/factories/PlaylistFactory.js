@@ -9,6 +9,7 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
     return Spotify.getCurrentUser()
       .then((currentUser) => {
         console.log('Logged in user: ', currentUser);
+        // Cache the current user
         user = currentUser;
       })
       .catch((error) => {
@@ -91,8 +92,15 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
   // Returns the selected playlist
   let getSelectedPlaylist = () => playlist;
 
+  /**
+   * Restructures the audio features object to to an array
+   * @param  {Object} obj Audio features object from Spotify API
+   * @return {Array <Float>}  Array of audio features
+   */
   let constructVectorFromObj = (obj) => {
     let featureArray = [];
+    // Features to be used by the neural network
+    // All features are on a scale from 0 to 1
     featureArray.push(
       obj.acousticness,
       obj.danceability,
@@ -105,6 +113,11 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
     return featureArray;
   };
 
+  /**
+   * Finds the audio features for a given playlist
+   * @param  {Object} playlist The playlist to find song features for
+   * @return {Promise} Resolves the audio features array
+   */
   let getAudioFeaturesForPlaylist = (playlist) => {
     return Spotify.getTracksAudioFeatures(
         playlist.songList.items.map((song) => {
@@ -115,16 +128,19 @@ app.factory('UserPlaylists', ($q, $http, Spotify) => {
         // Convert the object data into vectors
         let audioFeaturesArray = data.audio_features.map((feature, index) => {
           let vector = constructVectorFromObj(feature);
+          // Add the features vector to each track object
           playlist.songList.items[index].track.features = vector;
           return vector;
         });
 
         console.log(audioFeaturesArray);
         console.log(playlist);
+        return $q.resolve(audioFeaturesArray);
       });
   };
 
   return {
+    user,
     getUserInfo,
     setSelectedPlaylist,
     getSelectedPlaylist,
