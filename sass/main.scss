@@ -1,5 +1,6 @@
 @import 'reset';
 @import 'theme-colors';
+@import 'getting-started';
 
 @mixin centerer {
   position: absolute;
@@ -10,6 +11,7 @@
 
 body {
   font-family: 'Open Sans', sans-serif;
+  background-color: $darkgray;
 }
 
 .clearfix {

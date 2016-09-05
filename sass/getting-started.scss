@@ -1,0 +1,105 @@
+@import 'theme-colors';
+
+#getting-started-wrapper {
+  background-color: $darkgray;
+  color: $lightergray;
+  height: 100%;
+
+  nav {
+    background-color: $lightgray;
+    min-height: 12.5vh;
+
+    a {
+      color: $lightergray;
+
+      &:hover {
+        color: darken($lightergray, 10%);
+      }
+
+      &:active {
+        color: lighten($button-color, 20%);
+      }
+    }
+
+    img,
+    li {
+      float: right;
+    }
+
+    img {
+      margin-right: 5px;
+    }
+
+    li {
+      margin-top: 5vh;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: lighter;
+    }
+
+    .current-user {
+      margin-right: 10%;
+    }
+  }
+
+  .content-area {
+    cursor: default;
+    width: 25%;
+    margin: 0 auto;
+    padding: 7vh 1vw;
+    background-image: url(../img/BrainifyBrain-Background.png);
+    background-size: 30vh 30vh;
+    background-repeat: no-repeat;
+    background-position: 35% 75%;
+
+    h1 {
+      font-size: 3em;
+      font-weight: 800;
+    }
+  }
+}
+
+.user-profile {
+  width: 8vh;
+  height: 8vh;
+  border-radius: 50%;
+  margin-top: 2.25vh;
+}
+
+.playlists-area {
+  width: 30%;
+  margin: 0 auto;
+  margin-bottom: 5vh;
+
+  h3 {
+    margin: 0;
+  }
+
+  hr {
+    margin: 1vh 0;
+    border-color: $lightgray;
+  }
+
+  .playlist {
+    background-color: $lightgray;
+    height: 7.5vh;
+    margin: 0 auto;
+    margin-bottom: 0.5vh;
+
+    img {
+      display: block;
+      width: 6vh;
+      height: 6vh;
+      margin-top: 0.75vh;
+      margin-left: 0.75vh;
+      float: left;
+    }
+
+    li {
+      display: block;
+      float: right;
+      color: white;
+      margin-top: 2.25vh;
+      margin-right: 1vw;
+    }
+  }
+}

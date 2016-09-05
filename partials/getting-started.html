@@ -1,11 +1,16 @@
-<span us-spinner spinner-on="showSpinner"></span>
+<span us-spinner="{color: '#7c25f8'}" spinner-on="showSpinner"></span>
 
 <div id="getting-started-wrapper" ng-init="loadUserInfo()" ng-show="!showSpinner">
   <nav>
-    <img ng-src="{{user.images[0].url}}"/>
-    <ul>
-      <li>{{user.display_name}}</li>
-    </ul>
+    <div class="current-user">
+      <a href="#">
+        <ul>
+          <li>{{user.display_name}}</li>
+        </ul>
+        <img ng-src="{{user.images[0].url}}" class="user-profile" alt="{{user.display_name}}"/>
+      </a>
+    </div>
+    <div class="clearfix"></div>
   </nav>
   <div class="content-area">
     <h1>
@@ -16,11 +21,14 @@
     </h1>
   </div>
   <div class="playlists-area">
-    <playlist ng-repeat="playlist in user.playlists">
+    <h3>Your Playlists:</h3>
+    <hr/>
+    <div ng-repeat="playlist in user.playlists" class="playlist">
       <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}"/>
       <ul>
         <li>{{playlist.name}}</li>
       </ul>
-    </playlist>
+      <div class="clearfix"></div>
+    </div>
   </div>
 </div>
