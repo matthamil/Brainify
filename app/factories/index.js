@@ -1,5 +1,6 @@
 'use strict';
 
-app
-  .factory('UserPlaylists', require('./PlaylistFactory'))
-  .factory('SynapticFactory', require('./SynapticFactory'));
+let angular = require('angular');
+
+angular.module('Brainify').factory('UserPlaylists', require('./PlaylistFactory'));
+angular.module('Brainify').factory('SynapticFactory', require('./SynapticFactory'));

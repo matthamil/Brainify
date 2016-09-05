@@ -1,6 +1,7 @@
 'use strict';
 
-app
-  .controller('LoginCtrl', require('./LoginCtrl'))
-  .controller('GettingStartedCtrl', require('./GettingStartedCtrl'))
-  .controller('LearningCtrl', require('./LearningCtrl'));
+let angular = require('angular');
+
+angular.module('Brainify').controller('LoginCtrl', require('./LoginCtrl'));
+angular.module('Brainify').controller('GettingStartedCtrl', require('./GettingStartedCtrl'));
+angular.module('Brainify').controller('LearningCtrl', require('./LearningCtrl'));

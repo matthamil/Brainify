@@ -2,6 +2,11 @@
 
 let angular = require('angular');
 
+// Dependencies for Angular app
+require('angular-route');
+require('angular-spinner');
+require('angular-spotify');
+
 let app = angular.module('Brainify', ['ngRoute', 'angularSpinner', 'spotify']);
 
 require('./controllers');
@@ -23,3 +28,5 @@ app.config(function($routeProvider) {
     })
     .otherwise('/');
 });
+
+app.config(require('./SpotifyConfig'));
