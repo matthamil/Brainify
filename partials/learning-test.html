@@ -46,6 +46,10 @@
     Make a Prediction
   </button>
 
+  <h3 ng-show="didPredict">
+    {{songPredictionResult[0]}}
+  </h3>
+
   <hr>
   <p style="color:white" ng-repeat="song in playlist.songList.items">
     {{song.track.name}}

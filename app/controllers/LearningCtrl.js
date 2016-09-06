@@ -75,7 +75,8 @@ function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, $q)
       })
       .then((featuresVector) => {
         console.log('featuresVector, line 76:', featuresVector);
-        console.log(SynapticFactory.makePrediction(featuresVector));
+        $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector);
+        console.log($scope.songPredictionResult);
       });
   };
 }
