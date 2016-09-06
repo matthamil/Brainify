@@ -139,12 +139,29 @@ function UserPlaylistsFactory($q, $http, Spotify) {
       });
   };
 
+  let getAudioFeaturesForSongIds = (songIdsArray) => {
+    return Spotify.getTracksAudioFeatures(songIdsArray)
+    .then((data) => {
+      // Convert the object data into vectors
+      let audioFeaturesArray = data.audio_features.map((feature, index) => {
+        let vector = constructVectorFromObj(feature);
+        // Add the features vector to each track object
+        playlist.songList.items[index].track.features = vector;
+        return vector;
+      });
+
+      console.log(audioFeaturesArray);
+      return $q.resolve(audioFeaturesArray);
+    });
+  };
+
   return {
     user,
     getUserInfo,
     setSelectedPlaylist,
     getSelectedPlaylist,
-    getAudioFeaturesForPlaylist
+    getAudioFeaturesForPlaylist,
+    getAudioFeaturesForSongIds
   };
 }
 

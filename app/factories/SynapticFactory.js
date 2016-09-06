@@ -25,6 +25,8 @@ function SynapticFactory(Spotify) {
    * @param  {Array<Float>} dummySongs Song features for nonplaylist songs
    */
   let trainNetwork = (playlist, dummySongs) => {
+    console.log('playlist: line 28:', playlist);
+    console.log('dummySongs: line 29:', dummySongs);
     // Training the network
     let learningRate = 0.3;
     for (let i = 0; i < 40000; i++) {

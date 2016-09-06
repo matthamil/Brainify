@@ -33,11 +33,6 @@ function GettingStartedController($scope, $location, UserPlaylists, Spotify) {
       .then((data) => {
         $location.url('/test');
       });
-    // $location.url('/test');
-  };
-
-  $scope.test = () => {
-    UserPlaylists.getAudioFeaturesForPlaylist(UserPlaylists.getSelectedPlaylist());
   };
 }
 

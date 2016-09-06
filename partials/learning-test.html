@@ -1,6 +1,53 @@
 <div id="learning-test-wrapper">
-  <p ng-repeat="songs in playlist.songList.items">
-    {{songs.name}},
-    {{songs.title}}
+  <button type="button" ng-click="test()" class="btn btn-default">View User in Console</button>
+  <input type="text" ng-model="songToSearch" placeholder="Search for a title"/>
+  <button type="button" class="btn btn-default" ng-click="searchSong(songToSearch)">
+    Search
+  </button>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Artist</th>
+        <th>Add To Training Data</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="song in searchResults">
+        <td>{{song.name}}</td>
+        <td>{{song.artists[0].name}}</td>
+        <td><button type="button" class="btn btn-default" ng-click="addToDummySongsArray(song)">Add</button>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Dummy Songs</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Artist</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="song in dummySongs">
+        <td>{{song.name}}</td>
+        <td>{{song.artists[0].name}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button type="button" class="btn btn-success" ng-click="trainNetwork()">Train the Network</button>
+
+  <hr>
+
+  <input type="text" ng-model="songToPredict" placeholder="Search for a title"/>
+  <button type="button" class="btn btn-default" ng-click="takeAGuess()">
+    Make a Prediction
+  </button>
+
+  <hr>
+  <p style="color:white" ng-repeat="song in playlist.songList.items">
+    {{song.track.name}}
   </p>
 </div>
