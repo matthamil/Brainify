@@ -46,9 +46,11 @@
     Make a Prediction
   </button>
 
-  <h3 ng-show="didPredict">
-    {{songPredictionResult[0]}}
-  </h3>
+  <div>
+    <h1 style="color:white">Score: {{songPredictionResult[0]}}</h1>
+    <button type="button" class="btn btn-success">Correct</button>
+    <button type="button" class="btn btn-danger">Wrong</button>
+  </div>
 
   <hr>
   <p style="color:white" ng-repeat="song in playlist.songList.items">
