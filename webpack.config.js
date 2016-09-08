@@ -42,7 +42,7 @@ module.exports = function makeWebpackConfig () {
    */
   config.output = isTest ? {} : {
     // Absolute output directory
-    path: __dirname + './dist',
+    path: __dirname + '/dist',
 
     // Output path from the view of the page
     // Uses webpack-dev-server in development
@@ -50,11 +50,11 @@ module.exports = function makeWebpackConfig () {
 
     // Filename for entry points
     // Only adds hash in build mode
-    filename: isProd ? '[name].[hash].js' : '[name].bundle.js',
+    filename: isProd ? 'app.bundle.js' : 'app.bundle.js',
 
     // Filename for non-entry points
     // Only adds hash in build mode
-    chunkFilename: isProd ? '[name].[hash].js' : '[name].bundle.js'
+    chunkFilename: isProd ? 'app.bundle.js' : 'app.bundle.js'
   };
 
   /**
@@ -65,9 +65,10 @@ module.exports = function makeWebpackConfig () {
   if (isTest) {
     config.devtool = 'inline-source-map';
   } else if (isProd) {
-    config.devtool = 'source-map';
+    // Turning off source maps for production code for now
+    // config.devtool = 'source-map';
   } else {
-    config.devtool = 'eval-source-map';
+    // config.devtool = 'eval-source-map';
   }
 
   /**
@@ -154,42 +155,44 @@ module.exports = function makeWebpackConfig () {
   config.plugins = [];
 
   // Skip rendering index.html in test mode
-  if (!isTest) {
-    // Reference: https://github.com/ampedandwired/html-webpack-plugin
-    // Render index.html
-    config.plugins.push(
-      new HtmlWebpackPlugin({
-        template: './index.html',
-        inject: 'body'
-      }),
-
-      // Reference: https://github.com/webpack/extract-text-webpack-plugin
-      // Extract css files
-      // Disabled when in test mode or not in build mode
-      new ExtractTextPlugin('[name].[hash].css', {disable: !isProd})
-    )
-  }
+  // if (!isTest) {
+  //   // Reference: https://github.com/ampedandwired/html-webpack-plugin
+  //   // Render index.html
+  //   config.plugins.push(
+  //     new HtmlWebpackPlugin({
+  //       template: './index.html',
+  //       inject: 'body'
+  //     }),
+  //
+  //     // Reference: https://github.com/webpack/extract-text-webpack-plugin
+  //     // Extract css files
+  //     // Disabled when in test mode or not in build mode
+  //     new ExtractTextPlugin('[name].[hash].css', {disable: !isProd})
+  //   )
+  // }
 
   // Add build specific plugins
   if (isProd) {
     config.plugins.push(
+      new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js"),
+
       // Reference: http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
       // Only emit files when there are no errors
       new webpack.NoErrorsPlugin(),
 
       // Reference: http://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
       // Dedupe modules in the output
-      new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.DedupePlugin()
 
       // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
       // Minify all javascript, switch loaders to minimizing mode
-      new webpack.optimize.UglifyJsPlugin(),
+      // new webpack.optimize.UglifyJsPlugin(),
 
       // Copy assets from the public folder
       // Reference: https://github.com/kevlened/copy-webpack-plugin
-      new CopyWebpackPlugin([{
-        from: __dirname + './'
-      }])
+      // new CopyWebpackPlugin([{
+      //   // from: __dirname + './'
+      // }])
     )
   }
 
