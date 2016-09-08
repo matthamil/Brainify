@@ -2,6 +2,7 @@ css
 .sass-cache
 bower_components
 node_modules
+coverage
 app/SpotifyConfig.js
 dist/app.bundle.js
 dist/vendor.bundle.js

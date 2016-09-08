@@ -8,7 +8,9 @@ require('angular-spinner');
 require('angular-spotify');
 
 // Main Angular module
-let app = angular.module('Brainify', ['ngRoute', 'angularSpinner', 'spotify']);
+const MODULE_NAME = 'Brainify';
+
+let app = angular.module(MODULE_NAME, ['ngRoute', 'angularSpinner', 'spotify']);
 
 // Loading Controllers
 require('./controllers');
@@ -20,3 +22,5 @@ app.config(require('./Routes'));
 
 // Spotify API Configuration
 app.config(require('./SpotifyConfig'));
+
+export default MODULE_NAME;
