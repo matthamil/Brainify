@@ -30,7 +30,7 @@ Install the dependencies:
 npm install
 ```
 
-Run `npm run bundle` to build Brainify locally.
+Run `npm run build` to build Brainify locally.
 
 ## Machine learning techniques
 
