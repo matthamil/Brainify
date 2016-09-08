@@ -1,6 +1,7 @@
 import app from './app';
+require('jasmine-ajax');
 
-describe('app', () => {
+describe('Brainify', () => {
 
   describe('LoginCtrl', () => {
     let $controller
@@ -11,6 +12,14 @@ describe('app', () => {
       angular.mock.inject((_$controller_) => {
         $controller = _$controller_
       });
+
+      // Setup Jasmine Ajax
+      jasmine.Ajax.install();
+    });
+
+    afterEach(() => {
+      // Disable Jasmine Ajax
+      jasmine.Ajax.uninstall();
     });
 
     it('should have a controller', () => {

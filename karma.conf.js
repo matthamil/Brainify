@@ -4,9 +4,10 @@ module.exports = function karmaConfig (config) {
     frameworks: [
       // Reference: https://github.com/karma-runner/karma-jasmine
       // Set framework to jasmine
+      'jasmine-ajax',
       'jasmine'
     ],
-
+    
     reporters: [
       // Reference: https://github.com/mlex/karma-spec-reporter
       // Set reporter to print detailed results to console
@@ -31,7 +32,7 @@ module.exports = function karmaConfig (config) {
 
     browsers: [
       // Run tests using PhantomJS
-      // 'PhantomJS',
+      // 'PhantomJS'
       'ChromeCanary',
     ],
 

@@ -1,6 +1,7 @@
 {
   "name": "brainify",
   "version": "1.0.0",
+  "repository": "https://github.com/matthamil/Brainify",
   "description": "Using machine learning to build better Spotify playlists",
   "main": "app/app.js",
   "scripts": {
@@ -14,7 +15,6 @@
   "license": "ISC",
   "devDependencies": {
     "angular": "^1.5.8",
-    "webpack": "^1.13.2",
     "angular-mocks": "^1.5.0",
     "autoprefixer": "^6.0.3",
     "babel-core": "^6.2.1",
@@ -30,6 +30,7 @@
     "karma": "^1.1.0",
     "karma-coverage": "^1.0.0",
     "karma-jasmine": "^1.0.2",
+    "karma-jasmine-ajax": "^0.1.13",
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.26",
@@ -41,6 +42,7 @@
     "raw-loader": "^0.5.1",
     "rimraf": "^2.5.1",
     "style-loader": "^0.13.0",
+    "webpack": "^1.13.2",
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
