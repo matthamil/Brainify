@@ -1,16 +1,12 @@
 'use strict';
 
-function FirebaseFactory(($q, $http) => {
+function FirebaseFactory(($q, $http, $cacheFactory) => {
 
   function getSongFeaturesFromGenre(genre) {
-    return $q((resolve, reject) => {
-      $http.get(`https://brainify-ddc05.firebaseio.com/-KRQvqIBCFfxEsFaovny/${genre}.json`)
-        .then((data) => {
-          resolve(data);
-        }, (rejectData) => {
-          reject(rejectData);
-        })
-    });
+    return $http.get(`https://brainify-ddc05.firebaseio.com/-KRQvqIBCFfxEsFaovny/${genre}.json`)
+      .catch((error) => {
+        console.error('Error loading song features from genre:', error);
+      });
   }
 
   function getNegativeGenresSongFeatures(genreList) {
@@ -19,6 +15,21 @@ function FirebaseFactory(($q, $http) => {
         return getSongFeaturesFromGenre(genre);
       })
     );
+  }
+
+  function getNegativeGenreSongFeatures(genreList) {
+    return $http.get(`https://brainify-ddc05.firebaseio.com/-KRQvqIBCFfxEsFaovny.json`, { cache: true })
+      .then((genresObj) => {
+        // Remove the negative genres from the genres object
+        genreList.forEach((genre) => {
+          delete genresObj[genre];
+        });
+        $q.resolve(genreList);
+      })
+      .catch((error) => {
+        console.error('Error loading all song features:', error);
+      });
+    }
   }
 
   return {
