@@ -6,3 +6,5 @@ coverage
 app/SpotifyConfig.js
 dist/app.bundle.js
 dist/vendor.bundle.js
+helpers
+api_responses

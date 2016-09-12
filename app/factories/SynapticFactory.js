@@ -25,11 +25,6 @@ function SynapticFactory(Spotify) {
    * @param  {Array<Float>} dummySongs Song features for nonplaylist songs
    */
   let trainNetwork = (playlist, dummySongs) => {
-    console.log('playlist: line 28:', playlist);
-    console.log('dummySongs: line 29:', dummySongs);
-    playlist.forEach((song) => { console.log(song); });
-    dummySongs.forEach((song) => { console.log(song); });
-
     // Training the network
     let learningRate = 0.3;
     for (let i = 0; i < 40000; i++) {
@@ -56,9 +51,7 @@ function SynapticFactory(Spotify) {
 
     // Testing the network
     results.push(myNetwork.activate(song[0]));
-    console.log('Just a log:', myNetwork.activate(song[0]));
 
-    console.log('Predictions:', results);
     return results;
   };
 

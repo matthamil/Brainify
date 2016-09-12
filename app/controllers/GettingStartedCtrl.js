@@ -15,14 +15,13 @@ function GettingStartedController($scope, $location, UserPlaylists, Spotify) {
   $scope.loadUserInfo = () => {
     UserPlaylists.getUserInfo()
       .then((user) => {
-        console.log('User in controller:', user);
         $scope.user = user;
         // Disble the loading animation
         $scope.showSpinner = false;
       })
       .catch((error) => {
         // If no user is found, redirect to landing page
-        console.error(error);
+        console.error('Error: No user found', error);
         $location.url('/');
       });
   };

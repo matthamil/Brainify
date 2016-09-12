@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "angular-spotify": "^1.4.1",
+    "jsonfile": "^2.3.1",
     "synaptic": "^1.0.8"
   }
 }
