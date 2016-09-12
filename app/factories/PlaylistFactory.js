@@ -137,6 +137,11 @@ function UserPlaylistsFactory($q, $http, Spotify) {
     });
   }
 
+  /**
+   * Used when the user has selected a playlist that is 5 songs or shorter
+   * @param  {String} trackIdsString A comma separated list of track IDs
+   * @return {Promise} Resolves to track info
+   */
   function getRecommendationsForShortPlaylist(trackIdsString) {
     return Spotify.getRecommendations({ seed_tracks: trackIdsString})
       .then((songRecommendations) => {
@@ -144,8 +149,92 @@ function UserPlaylistsFactory($q, $http, Spotify) {
       });
   }
 
-  function extractAlbumsFromRecommendation(recTracks) {
-    
+  /**
+   * Finds artist IDs in the recommendations response. Needed to query
+   * getArtists API endpoint to find genres.
+   * @param  {Array} tracks Response from getRecommendationsForShortPlaylist
+   * @return {Promise} Resolves to array of artist Ids
+   */
+  function getArtistIdsFromRecommendation(tracks) {
+    return tracks.map((track) => {
+      return track.album.id;
+    });
+  }
+
+  /**
+   * Creates a tally of each artists' genre
+   * @param  {Array} artistIds  List of artist IDs
+   * @return {Promise} Resolves to object with tally of each genre
+   */
+  function buildGenreCounterFromArtists(artistIds) {
+    return Spotify.getArtists(artistIds)
+      .then((data) => {
+        let artists = data.artists;
+        let genresList = [];
+        let genresObj = {};
+
+        // Accumulate the list of each genre
+        artists.forEach((artist) => {
+          genresList.push(artist.genres);
+        });
+
+        // Convert the list into a counter object
+        for (let i = 0; i < genresList.length; i++) {
+          for (let j = 0; j < genresList[i]; j++) {
+            // If the genre does not exist on the object
+            if (!genresObj[genresList[i][j]]) {
+              genresObj[genresList[i][j]] = 1;
+            }
+            // If the genre does exist on the object
+            else {
+              genresObj[genresList[i][j]]++;
+            }
+          }
+        }
+
+        return $q.resolve(genresObj);
+      });
+  }
+
+  /**
+   * Returns the genre with the highest count on the objet
+   * @param  {Object} genresCounterObj Resolved from buildGenreCounterFromArtists
+   * @return {Array} Array of genre(s) with highest count
+   */
+  function getModeFromGenres(genresCounterObj) {
+    let maxCount = 0;
+    let determinedGenre = [];
+    for (let genre in genresCounterObj) {
+      if (genresCounterObj[genre] > maxCount) {
+        maxCount = genresCounterObj[genre];
+        determinedGenre = [genre];
+      }
+
+      else if (genresCounterObj[genre] === maxCount) {
+        maxCount = genresCounterObj[genre];
+        determinedGenre.push(genre);
+      }
+    }
+
+    return determinedGenre;
+  }
+
+  /**
+   * Resolves to a 2D array of all other genres' song features
+   * @param  {Array} genre Return from getModeFromGenres
+   * @return {Promise} Resolves to negative song features
+   */
+  function getNegativeGenres(genreList) {
+    let genres = ['acoustic', 'afrobeat', 'alt-rock', 'alternative', 'ambient', 'anime', 'black-metal', 'bluegrass', 'blues', 'bossanova', 'brazil', 'breakbeat', 'british', 'cantopop', 'chicago-house', 'children', 'chill', 'classical', 'club', 'comedy', 'country', 'dance', 'dancehall', 'death-metal', 'deep-house', 'detroit-techno', 'disco', 'disney', 'drum-and-bass', 'dub', 'dubstep', 'edm', 'electro', 'electronic', 'emo', 'folk', 'forro', 'french', 'funk', 'garage', 'german', 'gospel', 'goth', 'grindcore', 'groove', 'grunge', 'guitar', 'happy', 'hard-rock', 'hardcore', 'hardstyle', 'heavy-metal', 'hip-hop', 'holidays', 'honky-tonk', 'house', 'idm', 'indian', 'indie', 'indie-pop', 'industrial', 'iranian', 'j-dance', 'j-idol', 'j-pop', 'j-rock', 'jazz', 'k-pop', 'kids', 'latin', 'latino', 'malay', 'mandopop', 'metal', 'metal-misc', 'metalcore', 'minimal-techno', 'movies', 'mpb', 'new-age', 'new-release', 'opera', 'pagode', 'party', 'philippines-opm', 'piano', 'pop', 'pop-film', 'post-dubstep', 'power-pop', 'progressive-house', 'psych-rock', 'punk', 'punk-rock', 'r-n-b', 'rainy-day', 'reggae', 'reggaeton', 'road-trip', 'rock', 'rock-n-roll', 'rockabilly', 'romance', 'sad', 'salsa', 'samba', 'sertanejo', 'show-tunes', 'singer-songwriter', 'ska', 'sleep', 'songwriter', 'soul', 'soundtracks', 'spanish', 'study', 'summer', 'swedish', 'synth-pop', 'tango', 'techno', 'trance', 'trip-hop', 'turkish', 'work-out', 'world-music']
+    genreList.forEach((genre) => {
+      genres.find((genreInList, index) => {
+        if (genre === genreInList) {
+          genres.splice(index, 1);
+        }
+      });
+    });
+
+    return genres;
   }
 
   return {
