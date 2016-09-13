@@ -6,6 +6,57 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
 
   // Stores the user's selected playlist. Used to train a neural network.
   let playlist;
+
+  // Stores the genres that are not in the playlist
+  let genres = (function() {
+    let list = [];
+
+    return {
+      getList() {
+        return list;
+      },
+
+      setList(newList) {
+        list = newList;
+      },
+
+      push(item) {
+        list.push(item);
+      }
+    }
+  })();
+
+
+
+  /**
+   * Flattens an array
+   * @param  {Array} a Array
+   * @return {Array} 1D array
+   */
+  function flatten(a) {
+    return Array.isArray(a) ? [].concat(...a.map(flatten)) : a;
+  }
+
+  /**
+   * Remove repeat items in an array
+   * @param  {Array} a An array with duplicates
+   * @return {Array} Filtered array
+   */
+  function getUniqueArrayItems(a) {
+    var seen = {};
+    var out = [];
+    var len = a.length;
+    var j = 0;
+    for(var i = 0; i < len; i++) {
+         var item = a[i];
+         if(seen[item] !== 1) {
+               seen[item] = 1;
+               out[j++] = item;
+         }
+    }
+    return out;
+  }
+
   /**
    * Returns the current user along with user playlists as a property
    * @return {Object} current user
@@ -150,32 +201,52 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
   }
 
   /**
-   * Flattens an array
-   * @param  {Array} a Array
-   * @return {Array} 1D array
+   * Converts a list of genres into a list of track IDs
+   * @param  {Array<string>} genresArray List of genres
+   * @return {Promise} Resolves to a list of track IDs
    */
-  function flatten(a) {
-    return Array.isArray(a) ? [].concat(...a.map(flatten)) : a;
-  }
+  function getRecommendationsFromPlaylistGenres(genresArray) {
 
-  /**
-   * Remove repeat items in an array
-   * @param  {Array} a An array with duplicates
-   * @return {Array} Filtered array
-   */
-  function getUniqueArrayItems(a) {
-    var seen = {};
-    var out = [];
-    var len = a.length;
-    var j = 0;
-    for(var i = 0; i < len; i++) {
-         var item = a[i];
-         if(seen[item] !== 1) {
-               seen[item] = 1;
-               out[j++] = item;
-         }
-    }
-    return out;
+    genresArray = getUniqueArrayItems(
+      genresArray.map((genre) => {
+        return genre.split(' ')[0].replace(/\s/g, '%20');
+      })
+    );
+
+    genres.setList(genresArray);
+
+    return $q.all(
+      genresArray.map((genre) => {
+        return Spotify.getRecommendations({ seed_genres: genre, limit: 30 });
+      })
+    )
+    .then((data) => {
+      // Only keep responses that have songs recommended.
+      // Some recommendations return no songs.
+      let filteredData = data.filter((response) => {
+        return response.tracks.length > 0;
+      });
+
+      let trackIds = flatten(
+        filteredData.map((responseObj) => {
+          return convertRecommendationsToTrackIdList(responseObj.tracks);
+        })
+      );
+      console.log('Track IDs from recommendations from user\'s playlist:', trackIds);
+
+      if (trackIds.length > 100) {
+        trackIds.slice(0, 100);
+      }
+
+      return $q.resolve(trackIds);
+    })
+    .then((trackIds) => {
+      return Spotify.getTracksAudioFeatures(trackIds);
+    })
+    .then((audioFeaturesObj) => {
+      let featuresArray = audioFeaturesObj.audio_features.map(constructVectorFromObj);
+      return $q.resolve(featuresArray);
+    });
   }
 
   /**
@@ -183,7 +254,7 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
    * @param  {Object} playlist A user's playlist
    * @return {Promise} Resolves to the predominant genre
    */
-  function determineGenreFromLongPlaylist(playlist) {
+  function determineGenreFromPlaylist(playlist) {
     // if (trackIds.length < 20) { console.error('Playlist needs to be longer than 20 songs.'); return;}
 
     // Extracting artist IDs from the playlist object
@@ -200,11 +271,50 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
 
     console.log('Shortened artist ID list:', shortenedArtistIds);
 
-    buildGenreCounterFromArtists(shortenedArtistIds)
-      .then((determinedGenres) => {
-        console.log('Determined genres from selected playlist:', determinedGenres);
-        return FirebaseFactory.getNegativeGenresSongFeatures(determinedGenres);
-      });
+    return buildGenreListFromArtists(shortenedArtistIds);
+        // TODO: Move this function call into a separate function
+        // return FirebaseFactory.getNegativeGenresSongFeatures(determinedGenres);
+  }
+
+  function collectSongDataForNeuralNetwork(playlist) {
+    let positiveCase = [];
+    let negativeCase = [];
+    return determineGenreFromPlaylist(playlist)
+    .then((genres) => {
+      console.log('Genres found in user playlist:', genres);
+      return getRecommendationsFromPlaylistGenres(genres);
+    })
+    // .then((audioFeaturesArray) => {
+      // From 'guessing the genre'
+      // This skews the neural network's judgment drastically.
+      // return $q.resolve(positiveCase = audioFeaturesArray);
+    // })
+    .then(() => {
+      return getAudioFeaturesForPlaylist(playlist);
+    })
+    .then((audioFeaturesArray) => {
+      return $q.resolve(positiveCase = audioFeaturesArray);
+    })
+    .then(() => {
+      return FirebaseFactory.getNegativeGenresSongFeatures(genres.getList());
+    })
+    .then((negativeSongFeatures) => {
+      negativeCase = negativeSongFeatures;
+
+      let randomNegative = [];
+      for (let i = 0; i < positiveCase.length; i++) {
+        randomNegative.push(negativeCase[Math.floor(Math.random() * negativeCase.length)]);
+      }
+
+      let trainingDataObj = {
+        positive: positiveCase,
+        negative: randomNegative
+      };
+
+      console.log('Training data obj:', trainingDataObj);
+
+      return $q.resolve(trainingDataObj);
+    })
   }
 
   /**
@@ -213,6 +323,7 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
    * @return {Promise} Resolves to an array of track IDs
    */
   function convertRecommendationsToTrackIdList(response) {
+    if (!Array.isArray(response)) { return console.error('Error: Make sure you are passing responseObj.tracks!');}
     return response.map((track) => {
       return track.id;
     });
@@ -235,7 +346,7 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
    * @param  {Array} artistIds  List of artist IDs
    * @return {Promise} Resolves to object with tally of each genre
    */
-  function buildGenreCounterFromArtists(artistIds) {
+  function buildGenreListFromArtists(artistIds) {
     return Spotify.getArtists(artistIds)
       .then((data) => {
         console.log('Response data from getArtist:', data);
@@ -268,28 +379,29 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
       });
   }
 
+  // TODO: DEPRECATED FUNCTION
   /**
    * Returns the genre with the highest count on the objet
    * @param  {Object} genresCounterObj Resolved from buildGenreCounterFromArtists
    * @return {Array} Array of genre(s) with highest count
    */
-  function getModeFromGenres(genresCounterObj) {
-    let maxCount = 0;
-    let determinedGenre = [];
-    for (let genre in genresCounterObj) {
-      if (genresCounterObj[genre] > maxCount) {
-        maxCount = genresCounterObj[genre];
-        determinedGenre = [genre];
-      }
-
-      else if (genresCounterObj[genre] === maxCount) {
-        maxCount = genresCounterObj[genre];
-        determinedGenre.push(genre);
-      }
-    }
-
-    return determinedGenre;
-  }
+  // function getModeFromGenres(genresCounterObj) {
+  //   let maxCount = 0;
+  //   let determinedGenre = [];
+  //   for (let genre in genresCounterObj) {
+  //     if (genresCounterObj[genre] > maxCount) {
+  //       maxCount = genresCounterObj[genre];
+  //       determinedGenre = [genre];
+  //     }
+  //
+  //     else if (genresCounterObj[genre] === maxCount) {
+  //       maxCount = genresCounterObj[genre];
+  //       determinedGenre.push(genre);
+  //     }
+  //   }
+  //
+  //   return determinedGenre;
+  // }
 
   /**
    * Resolves to a 2D array of all other genres' song features
@@ -316,7 +428,7 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
     getSelectedPlaylist,
     getAudioFeaturesForPlaylist,
     getAudioFeaturesForSongIds,
-    determineGenreFromLongPlaylist
+    collectSongDataForNeuralNetwork
   };
 }
 

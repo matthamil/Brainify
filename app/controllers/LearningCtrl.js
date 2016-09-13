@@ -1,6 +1,6 @@
 'use strict';
 
-function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, FirebaseFactory) {
+function LearningController($scope, $q, SynapticFactory, UserPlaylists, Spotify, FirebaseFactory) {
   $scope.user = UserPlaylists.user;
 
   $scope.playlist = UserPlaylists.getSelectedPlaylist();
@@ -19,11 +19,16 @@ function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, Fir
 
   $scope.genreTest = () => {
     console.log('$scope.playlist:', $scope.playlist);
-    UserPlaylists.determineGenreFromLongPlaylist($scope.playlist)
-      .then((data) => {
-        console.log(data);
-      })
-  }
+    UserPlaylists.collectSongDataForNeuralNetwork($scope.playlist)
+      .then((trainingData) => {
+        let startTime = new Date();
+        console.log('Started: training the network at ', startTime);
+        SynapticFactory.trainNetwork(trainingData.positive, trainingData.negative);
+        let endTime = new Date();
+        let timeDiff = (endTime - startTime)/1000;
+        console.info(`Completed training the network in ${timeDiff} seconds.`);
+      });
+  };
 
   // Stores the search results for display in the search results table
   $scope.searchResults = [];

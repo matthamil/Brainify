@@ -41,7 +41,21 @@ function FirebaseFactory($q, $http, $cacheFactory) {
           }
         });
 
-        return $q.resolve(genresObj);
+        let negativeGenresList = [];
+
+        for (let key in genresObj) {
+          negativeGenresList.push(genresObj[key]);
+        }
+
+        let flattenedArr = [];
+
+        negativeGenresList.forEach((genreFeatureGroup, index) => {
+          flattenedArr = flattenedArr.concat(genreFeatureGroup.map((features) => {
+            return features;
+          }));
+        });
+
+        return $q.resolve(flattenedArr);
       })
       .catch((error) => {
         console.error('Error loading all song features:', error);

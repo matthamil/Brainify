@@ -1,46 +1,52 @@
 <div id="learning-test-wrapper">
   <button type="button" ng-click="test()" class="btn btn-default">View User in Console</button>
   <button type="button" ng-click="firebaseTest()" class="btn btn-default">Firebase Genre Loading Test</button>
-  <button type="button" ng-click="genreTest()" class="btn btn-default">Genre Determination Test</button>
+  <button type="button" ng-click="genreTest()" class="btn btn-primary">Train Network Automatically</button>
 
+  <br/>
+  <!-- Manual Network Training -->
+  <div class="container">
+
+  <h1 style="color:white; text-align:center">Manual Training Controls</h1>
   <input type="text" ng-model="songToSearch" placeholder="Search for a title"/>
   <button type="button" class="btn btn-default" ng-click="searchSong(songToSearch)">
     Search
   </button>
-  <table class="table">
+  <table class="table" style="color:white">
     <thead>
       <tr>
-        <th>Title</th>
-        <th>Artist</th>
-        <th>Add To Training Data</th>
+        <th style="color:white">Title</th>
+        <th style="color:white">Artist</th>
+        <th style="color:white">Add To Training Data</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="song in searchResults">
-        <td>{{song.name}}</td>
-        <td>{{song.artists[0].name}}</td>
+        <td style="color:white">{{song.name}}</td>
+        <td style="color:white">{{song.artists[0].name}}</td>
         <td><button type="button" class="btn btn-default" ng-click="addToDummySongsArray(song)">Add</button>
       </tr>
     </tbody>
   </table>
 
-  <h2>Dummy Songs</h2>
-  <table class="table">
+  <h2 style="color:white">Negative Case Song List</h2>
+  <table class="table" style="color:white">
     <thead>
       <tr>
-        <th>Title</th>
-        <th>Artist</th>
+        <th style="color:white">Title</th>
+        <th style="color:white">Artist</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="song in dummySongs">
-        <td>{{song.name}}</td>
-        <td>{{song.artists[0].name}}</td>
+        <td style="color:white">{{song.name}}</td>
+        <td style="color:white">{{song.artists[0].name}}</td>
       </tr>
     </tbody>
   </table>
 
   <button type="button" class="btn btn-success" ng-click="trainNetwork()">Train the Network</button>
+  </div>
 
   <hr>
 
@@ -51,8 +57,8 @@
 
   <div>
     <h1 style="color:white">Score: {{songPredictionResult[0]}}</h1>
-    <button type="button" class="btn btn-success">Correct</button>
-    <button type="button" class="btn btn-danger">Wrong</button>
+    <button type="button" class="btn btn-success" disabled>Correct</button>
+    <button type="button" class="btn btn-danger" disabled>Wrong</button>
   </div>
 
   <hr>
