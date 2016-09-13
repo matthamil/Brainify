@@ -4,7 +4,11 @@ function AppRoutes($routeProvider) {
   $routeProvider
     .when('/', {
       templateUrl: 'partials/landing-page.html',
-      controller: 'LoginCtrl'
+      controller: 'FirebaseLoginCtrl'
+    })
+    .when('/connect-with-spotify', {
+      templateUrl: 'partials/connect-with-spotify.html',
+      controller: 'SpotifyLoginCtrl'
     })
     .when('/getting-started', {
       templateUrl: 'partials/getting-started.html',
@@ -15,6 +19,8 @@ function AppRoutes($routeProvider) {
       controller: 'LearningCtrl'
     })
     .otherwise('/');
+
+  console.log('$routeProvider configured.');
 }
 
 module.exports = AppRoutes;

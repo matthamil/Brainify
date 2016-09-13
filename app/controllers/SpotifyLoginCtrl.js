@@ -1,11 +1,6 @@
 'use strict';
 
-/**
- * Login Controller
- * Dependencies: $scope, $location, Spotify (from angular-spotify)
- */
-
-function LoginController($scope, $location, Spotify) {
+function SpotifyLoginController($scope, $location, Spotify) {
   /**
    * Creates a popup window for a user to login and saves the auth token to local storage.
    * This function relies on app/SpotifyConfig.js which is not included in the project repo.
@@ -18,10 +13,10 @@ function LoginController($scope, $location, Spotify) {
         $location.url('/getting-started');
       })
       .catch((error) => {
-        // If the user closes the login popup, redirect to landing page
-        $location.url('/');
+        // If the user closes the login popup, redirect to Connect with Spotify page
+        $location.url('/connect-with-spotify');
       });
   };
 }
 
-module.exports = LoginController;
+module.exports = SpotifyLoginController;

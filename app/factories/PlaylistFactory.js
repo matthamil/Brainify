@@ -1,6 +1,6 @@
 'use strict';
 
-function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
+function PlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
   // Stores the user object upon login
   let user;
 
@@ -432,4 +432,4 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
   };
 }
 
-module.exports = UserPlaylistsFactory;
+module.exports = PlaylistsFactory;

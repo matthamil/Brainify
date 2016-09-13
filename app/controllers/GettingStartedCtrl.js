@@ -1,11 +1,6 @@
 'use strict';
 
-/**
- * Getting Started Controller
- * Dependencies: $scope, $location, UserPlaylists (Factory), Spotify (from angular-spotify)
- */
-
-function GettingStartedController($scope, $location, UserPlaylists, Spotify) {
+function GettingStartedController($scope, $location, PlaylistsFactory, Spotify) {
   // Boolean to control loading animation
   $scope.showSpinner = true;
 
@@ -13,7 +8,7 @@ function GettingStartedController($scope, $location, UserPlaylists, Spotify) {
    * Loads the current user and the user's playlists
    */
   $scope.loadUserInfo = () => {
-    UserPlaylists.getUserInfo()
+    PlaylistsFactory.getUserInfo()
       .then((user) => {
         $scope.user = user;
         // Disble the loading animation
@@ -21,14 +16,14 @@ function GettingStartedController($scope, $location, UserPlaylists, Spotify) {
       })
       .catch((error) => {
         // If no user is found, redirect to landing page
-        console.error('Error: No user found', error);
+        console.error('Error: No Spotify user found', error);
         $location.url('/');
       });
   };
 
   $scope.setSelectedPlaylist = (playlistId) => {
-    UserPlaylists.setSelectedPlaylist(playlistId);
-    UserPlaylists.getAudioFeaturesForPlaylist(UserPlaylists.getSelectedPlaylist())
+    PlaylistsFactory.setSelectedPlaylist(playlistId);
+    PlaylistsFactory.getAudioFeaturesForPlaylist(PlaylistsFactory.getSelectedPlaylist())
       .then((data) => {
         $location.url('/test');
       });
