@@ -26,7 +26,7 @@ function SynapticFactory(Spotify) {
    */
   let trainNetwork = (playlist, dummySongs) => {
     // Training the network
-    let learningRate = 0.3;
+    let learningRate = 0.01;
     for (let i = 0; i < 40000; i++) {
       playlist.forEach((song) => {
         myNetwork.activate(song);
@@ -40,6 +40,15 @@ function SynapticFactory(Spotify) {
     }
   };
 
+  let correctNetwork = (song, value) => {
+    console.log('Retraining network...');
+    myNetwork.activate(song[0]);
+    for (let i = 0; i < 100; i++) {
+      myNetwork.propagate(0.01, [value]);
+    }
+    console.log('Done correcting network!');
+  };
+
   /**
    * Predicts if the song should be in the playlist.
    * The neural network MUST be trained prior.
@@ -47,10 +56,12 @@ function SynapticFactory(Spotify) {
    * @return {Array<Integer>} Array with [0,1] (fits playlist) or [1,0] (does not fit)
    */
   let makePrediction = (song) => {
+    console.log('song to make a prediction for:', song[0]);
     let results = [];
 
     // Testing the network
     results.push(myNetwork.activate(song[0]));
+    console.log('results:', results);
 
     return results;
   };
@@ -58,7 +69,8 @@ function SynapticFactory(Spotify) {
   return {
     trainNetwork,
     makePrediction,
-    myNetwork
+    myNetwork,
+    correctNetwork
   };
 }
 

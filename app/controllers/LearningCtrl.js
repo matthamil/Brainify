@@ -1,6 +1,6 @@
 'use strict';
 
-function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, $q) {
+function LearningController($scope, $q, SynapticFactory, UserPlaylists, Spotify, FirebaseFactory) {
   $scope.user = UserPlaylists.user;
 
   $scope.playlist = UserPlaylists.getSelectedPlaylist();
@@ -8,7 +8,27 @@ function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, $q)
   $scope.test = () => {
     console.log('User:', $scope.user);
     console.log('Playlist:', $scope.playlist);
+  };
+
+  $scope.firebaseTest = () => {
+    FirebaseFactory.getNegativeGenresSongFeatures(['bluegrass', 'country'])
+      .then((data) => {
+        console.log(data);
+      })
   }
+
+  $scope.genreTest = () => {
+    console.log('$scope.playlist:', $scope.playlist);
+    UserPlaylists.collectSongDataForNeuralNetwork($scope.playlist)
+      .then((trainingData) => {
+        let startTime = new Date();
+        console.log('Started: training the network at ', startTime);
+        SynapticFactory.trainNetwork(trainingData.positive, trainingData.negative);
+        let endTime = new Date();
+        let timeDiff = (endTime - startTime)/1000;
+        console.info(`Completed training the network in ${timeDiff} seconds.`);
+      });
+  };
 
   // Stores the search results for display in the search results table
   $scope.searchResults = [];
@@ -62,18 +82,51 @@ function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, $q)
 
   $scope.songToPredict = '';
 
+  $scope.resetPredictionSearch = () => {
+    $scope.songToPredict = '';
+    $scope.songToPredictSearchResult = false;
+    SynapticFactory.correctNetwork(songToPredictFeatures, Math.round($scope.songPredictionResult));
+    $scope.correct = false;
+    $scope.incorrect = false;
+  };
+
+  let songToPredictFeatures;
+
+  $scope.networkGuessedWrong = () => {
+    $scope.showHowToFix = true;
+  };
+
+  $scope.correctNetwork = () => {
+    SynapticFactory.correctNetwork(songToPredictFeatures, $scope.correctResponse);
+    $scope.showHowToFix = false;
+    $scope.correct = false;
+    $scope.incorrect = false;
+  };
+
+  $scope.showHowToFix = false;
+
   $scope.takeAGuess = () => {
     Spotify.search($scope.songToPredict, 'track', {limit: 1})
       .then((data) => {
+        console.log(data);
+        $scope.songToPredictSearchResult = data.tracks.items[0];
         return $q.resolve([data.tracks.items[0].id]);
       })
       .then((arr) => {
         return UserPlaylists.getAudioFeaturesForSongIds(arr);
       })
       .then((featuresVector) => {
+        songToPredictFeatures = featuresVector;
         $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector);
         $scope.didPredict = true;
         console.log('Prediction:', $scope.songPredictionResult);
+        if (Math.round($scope.songPredictionResult)) {
+          $scope.correct = true
+          $scope.incorrect = false;
+        } else {
+          $scope.incorrect = true;
+          $scope.correct = false;
+        }
       });
   };
 }
