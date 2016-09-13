@@ -24,6 +24,8 @@ function SpotifyAPISetup(SpotifyProvider) {
 module.exports = SpotifyAPISetup;
 ```
 
+Firebase configuration settings are not included in this repo.
+
 Install the dependencies:
 
 ```
