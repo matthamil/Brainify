@@ -1,9 +1,9 @@
 'use strict';
 
-function LearningController($scope, $q, SynapticFactory, UserPlaylists, Spotify, FirebaseFactory) {
-  $scope.user = UserPlaylists.user;
+function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spotify, FirebaseFactory) {
+  $scope.user = PlaylistsFactory.user;
 
-  $scope.playlist = UserPlaylists.getSelectedPlaylist();
+  $scope.playlist = PlaylistsFactory.getSelectedPlaylist();
 
   $scope.test = () => {
     console.log('User:', $scope.user);
@@ -19,7 +19,7 @@ function LearningController($scope, $q, SynapticFactory, UserPlaylists, Spotify,
 
   $scope.genreTest = () => {
     console.log('$scope.playlist:', $scope.playlist);
-    UserPlaylists.collectSongDataForNeuralNetwork($scope.playlist)
+    PlaylistsFactory.collectSongDataForNeuralNetwork($scope.playlist)
       .then((trainingData) => {
         let startTime = new Date();
         console.log('Started: training the network at ', startTime);
@@ -65,13 +65,13 @@ function LearningController($scope, $q, SynapticFactory, UserPlaylists, Spotify,
   $scope.trainNetwork = () => {
     let dummySongsFeaturesVector;
     // Finding the audio features for the "incorrect" songs
-    UserPlaylists.getAudioFeaturesForSongIds($scope.dummySongIds)
+    PlaylistsFactory.getAudioFeaturesForSongIds($scope.dummySongIds)
       .then((featuresVector) => {
         dummySongsFeaturesVector = featuresVector;
       })
       .then((data) => {
         // Finding the audio features for the "correct" songs
-        return UserPlaylists.getAudioFeaturesForPlaylist($scope.playlist);
+        return PlaylistsFactory.getAudioFeaturesForPlaylist($scope.playlist);
       })
       .then((featuresVector) => {
         // Training the network
@@ -113,7 +113,7 @@ function LearningController($scope, $q, SynapticFactory, UserPlaylists, Spotify,
         return $q.resolve([data.tracks.items[0].id]);
       })
       .then((arr) => {
-        return UserPlaylists.getAudioFeaturesForSongIds(arr);
+        return PlaylistsFactory.getAudioFeaturesForSongIds(arr);
       })
       .then((featuresVector) => {
         songToPredictFeatures = featuresVector;

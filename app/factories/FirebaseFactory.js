@@ -1,5 +1,7 @@
 'use strict';
 
+const firebase = require('firebase');
+
 function FirebaseFactory($q, $http, $cacheFactory) {
 
   function getSongFeaturesFromGenre(genre) {

@@ -6,6 +6,7 @@ let angular = require('angular');
 require('angular-route');
 require('angular-spinner');
 require('angular-spotify');
+const firebase = require('firebase');
 
 // Main Angular module
 const MODULE_NAME = 'Brainify';
@@ -22,5 +23,14 @@ app.config(require('./Routes'));
 
 // Spotify API Configuration
 app.config(require('./SpotifyConfig'));
+
+// Firebase Auth Configuration
+const FirebaseConfigObj = require('./FirebaseConfig');
+app.constant(FirebaseConfigObj.name, FirebaseConfigObj.data);
+
+app.run(($location, FB_CREDENTIALS) => {
+  firebase.initializeApp(FB_CREDENTIALS);
+});
+
 
 export default MODULE_NAME;
