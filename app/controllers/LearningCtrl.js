@@ -1,6 +1,6 @@
 'use strict';
 
-function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, $q) {
+function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, FirebaseFactory) {
   $scope.user = UserPlaylists.user;
 
   $scope.playlist = UserPlaylists.getSelectedPlaylist();
@@ -8,6 +8,13 @@ function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, $q)
   $scope.test = () => {
     console.log('User:', $scope.user);
     console.log('Playlist:', $scope.playlist);
+  };
+
+  $scope.firebaseTest = () => {
+    FirebaseFactory.getNegativeGenresSongFeatures(['bluegrass', 'country'])
+      .then((data) => {
+        console.log(data);
+      })
   }
 
   // Stores the search results for display in the search results table

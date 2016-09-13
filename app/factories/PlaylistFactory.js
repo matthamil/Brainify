@@ -1,6 +1,6 @@
 'use strict';
 
-function UserPlaylistsFactory($q, $http, Spotify) {
+function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
   // Stores the user object upon login
   let user;
 
@@ -143,10 +143,32 @@ function UserPlaylistsFactory($q, $http, Spotify) {
    * @return {Promise} Resolves to track info
    */
   function getRecommendationsForShortPlaylist(trackIdsString) {
-    return Spotify.getRecommendations({ seed_tracks: trackIdsString})
+    return Spotify.getRecommendations({ seed_tracks: trackIdsString, limit: 100 })
       .then((songRecommendations) => {
         return $q.resolve(songRecommendations.tracks);
       });
+  }
+
+  /**
+   * Determines the predominant genre in a playlist with over 20 songs.
+   * @param  {Array<string>} trackIds List of track IDs from a playlist
+   * @return {Promise} Resolves to the predominant genre
+   */
+  function determineGenreFromLongPlaylist(trackIds) {
+    if (trackIds.length < 20) { return throw new Error('Playlist needs to be longer than 20 songs.')}
+
+
+  }
+
+  /**
+   * Converts the response from the getRecommendations API endpoint to an array
+   * of track IDs
+   * @return {Promise} Resolves to an array of track IDs
+   */
+  function convertRecommendationsToTrackIdList(response) {
+    return response.map((track) => {
+      return track.id;
+    });
   }
 
   /**

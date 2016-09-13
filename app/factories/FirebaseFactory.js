@@ -1,40 +1,56 @@
 'use strict';
 
-function FirebaseFactory(($q, $http, $cacheFactory) => {
+function FirebaseFactory($q, $http, $cacheFactory) {
 
   function getSongFeaturesFromGenre(genre) {
-    return $http.get(`https://brainify-ddc05.firebaseio.com/-KRQvqIBCFfxEsFaovny/${genre}.json`)
-      .catch((error) => {
-        console.error('Error loading song features from genre:', error);
-      });
+    return $q((resolve, reject) => {
+      $http.get(`https://brainify-ddc05.firebaseio.com/-KRQvqIBCFfxEsFaovny/${genre}.json`)
+        .success((data) => {
+          resolve(data);
+        })
+        .error((error) => {
+          console.error(`Error loading ${genre} data from Firebase:`, error);
+          reject(error);
+        });
+    });
   }
 
+  /**
+   * Returns negative genre song features
+   * @param  {Array} genreList Return value from PlaylistFactory.getNegativeGenres
+   * @return {Promise} Resolves to 2D array of song features
+   */
   function getNegativeGenresSongFeatures(genreList) {
-    return $q.all(
-      return genreList.map((genre) => {
-        return getSongFeaturesFromGenre(genre);
+    return $q((resolve, reject) => {
+      $http.get(`https://brainify-ddc05.firebaseio.com/-KRQvqIBCFfxEsFaovny.json`, { cache: true })
+        .success((data) => {
+          resolve(data);
+        })
+        .error((error) => {
+          console.error('Failed to load all genre song features:', error);
+          reject(error);
+        });
       })
-    );
-  }
-
-  function getNegativeGenreSongFeatures(genreList) {
-    return $http.get(`https://brainify-ddc05.firebaseio.com/-KRQvqIBCFfxEsFaovny.json`, { cache: true })
       .then((genresObj) => {
         // Remove the negative genres from the genres object
         genreList.forEach((genre) => {
-          delete genresObj[genre];
+          if (genresObj[genre]) {
+            delete genresObj[genre];
+            console.log(`Deleted ${genre} from list.`);
+          }
         });
-        $q.resolve(genreList);
+
+        return $q.resolve(genresObj);
       })
       .catch((error) => {
         console.error('Error loading all song features:', error);
       });
     }
-  }
 
   return {
-    getSongFeaturesFromGenre
+    getSongFeaturesFromGenre,
+    getNegativeGenresSongFeatures
   };
-});
+}
 
 module.exports = FirebaseFactory;
