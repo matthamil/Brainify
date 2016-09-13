@@ -82,18 +82,51 @@ function LearningController($scope, $q, SynapticFactory, UserPlaylists, Spotify,
 
   $scope.songToPredict = '';
 
+  $scope.resetPredictionSearch = () => {
+    $scope.songToPredict = '';
+    $scope.songToPredictSearchResult = false;
+    SynapticFactory.correctNetwork(songToPredictFeatures, Math.round($scope.songPredictionResult));
+    $scope.correct = false;
+    $scope.incorrect = false;
+  };
+
+  let songToPredictFeatures;
+
+  $scope.networkGuessedWrong = () => {
+    $scope.showHowToFix = true;
+  };
+
+  $scope.correctNetwork = () => {
+    SynapticFactory.correctNetwork(songToPredictFeatures, $scope.correctResponse);
+    $scope.showHowToFix = false;
+    $scope.correct = false;
+    $scope.incorrect = false;
+  };
+
+  $scope.showHowToFix = false;
+
   $scope.takeAGuess = () => {
     Spotify.search($scope.songToPredict, 'track', {limit: 1})
       .then((data) => {
+        console.log(data);
+        $scope.songToPredictSearchResult = data.tracks.items[0];
         return $q.resolve([data.tracks.items[0].id]);
       })
       .then((arr) => {
         return UserPlaylists.getAudioFeaturesForSongIds(arr);
       })
       .then((featuresVector) => {
+        songToPredictFeatures = featuresVector;
         $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector);
         $scope.didPredict = true;
         console.log('Prediction:', $scope.songPredictionResult);
+        if (Math.round($scope.songPredictionResult)) {
+          $scope.correct = true
+          $scope.incorrect = false;
+        } else {
+          $scope.incorrect = true;
+          $scope.correct = false;
+        }
       });
   };
 }

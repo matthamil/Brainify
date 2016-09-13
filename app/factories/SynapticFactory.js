@@ -40,6 +40,15 @@ function SynapticFactory(Spotify) {
     }
   };
 
+  let correctNetwork = (song, value) => {
+    console.log('Retraining network...');
+    myNetwork.activate(song[0]);
+    for (let i = 0; i < 100; i++) {
+      myNetwork.propagate(0.01, [value]);
+    }
+    console.log('Done correcting network!');
+  };
+
   /**
    * Predicts if the song should be in the playlist.
    * The neural network MUST be trained prior.
@@ -60,7 +69,8 @@ function SynapticFactory(Spotify) {
   return {
     trainNetwork,
     makePrediction,
-    myNetwork
+    myNetwork,
+    correctNetwork
   };
 }
 

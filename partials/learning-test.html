@@ -50,15 +50,29 @@
 
   <hr>
 
+  <h1 style="text-align:center;color:white">Test the Network</h1>
   <input type="text" ng-model="songToPredict" placeholder="Search for a title"/>
-  <button type="button" class="btn btn-default" ng-click="takeAGuess()">
+  <div style="display:inline-block;color:white" ng-show="songToPredictSearchResult">{{songToPredictSearchResult.name}} by {{songToPredictSearchResult.artists[0].name}}</div>
+  <div style="display:inline-block" ng-show="correct">
+    <span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:#32CD32"></span>
+  </div>
+  <div style="display:inline-block" ng-show="incorrect">
+    <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:firebrick"></span>
+  </div>
+  <button style="display:block" type="button" class="btn btn-default" ng-click="takeAGuess()">
     Make a Prediction
   </button>
 
   <div>
     <h1 style="color:white">Score: {{songPredictionResult[0]}}</h1>
-    <button type="button" class="btn btn-success" disabled>Correct</button>
-    <button type="button" class="btn btn-danger" disabled>Wrong</button>
+
+    <button type="button" class="btn btn-success" ng-click="resetPredictionSearch()">Correct</button>
+    <button type="button" class="btn btn-danger" ng-click="networkGuessedWrong()">Wrong</button>
+
+    <div ng-show="showHowToFix">
+      <input style="min-width: 100px" placeholder="Enter correct answer..." ng-model="correctResponse" type="number" min=0 max=1>
+      <button type="button" class="btn btn-primary" ng-click="correctNetwork()">Retrain</button>
+    </div>
   </div>
 
   <hr>
