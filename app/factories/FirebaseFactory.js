@@ -32,6 +32,7 @@ function FirebaseFactory($q, $http, $cacheFactory) {
         });
       })
       .then((genresObj) => {
+        console.log('Resolved from getNegativeGenresSongFeatures');
         // Remove the negative genres from the genres object
         genreList.forEach((genre) => {
           if (genresObj[genre]) {

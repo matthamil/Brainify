@@ -17,6 +17,14 @@ function LearningController($scope, SynapticFactory, UserPlaylists, Spotify, Fir
       })
   }
 
+  $scope.genreTest = () => {
+    console.log('$scope.playlist:', $scope.playlist);
+    UserPlaylists.determineGenreFromLongPlaylist($scope.playlist)
+      .then((data) => {
+        console.log(data);
+      })
+  }
+
   // Stores the search results for display in the search results table
   $scope.searchResults = [];
 

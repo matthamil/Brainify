@@ -150,14 +150,61 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
   }
 
   /**
+   * Flattens an array
+   * @param  {Array} a Array
+   * @return {Array} 1D array
+   */
+  function flatten(a) {
+    return Array.isArray(a) ? [].concat(...a.map(flatten)) : a;
+  }
+
+  /**
+   * Remove repeat items in an array
+   * @param  {Array} a An array with duplicates
+   * @return {Array} Filtered array
+   */
+  function getUniqueArrayItems(a) {
+    var seen = {};
+    var out = [];
+    var len = a.length;
+    var j = 0;
+    for(var i = 0; i < len; i++) {
+         var item = a[i];
+         if(seen[item] !== 1) {
+               seen[item] = 1;
+               out[j++] = item;
+         }
+    }
+    return out;
+  }
+
+  /**
    * Determines the predominant genre in a playlist with over 20 songs.
-   * @param  {Array<string>} trackIds List of track IDs from a playlist
+   * @param  {Object} playlist A user's playlist
    * @return {Promise} Resolves to the predominant genre
    */
-  function determineGenreFromLongPlaylist(trackIds) {
-    if (trackIds.length < 20) { return throw new Error('Playlist needs to be longer than 20 songs.')}
+  function determineGenreFromLongPlaylist(playlist) {
+    // if (trackIds.length < 20) { console.error('Playlist needs to be longer than 20 songs.'); return;}
 
+    // Extracting artist IDs from the playlist object
+    let artistIds = playlist.songList.items.map((item) => {
+        return item.track.artists.map(artist => artist.id);
+    });
 
+    artistIds = flatten(artistIds);
+
+    // Can only query up to 50 artists at a time
+    console.log('Artist IDs from playlist:', artistIds);
+
+    let shortenedArtistIds = artistIds.slice(0, 50);
+
+    console.log('Shortened artist ID list:', shortenedArtistIds);
+
+    buildGenreCounterFromArtists(shortenedArtistIds)
+      .then((determinedGenres) => {
+        console.log('Determined genres from selected playlist:', determinedGenres);
+        return FirebaseFactory.getNegativeGenresSongFeatures(determinedGenres);
+      });
   }
 
   /**
@@ -179,7 +226,7 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
    */
   function getArtistIdsFromRecommendation(tracks) {
     return tracks.map((track) => {
-      return track.album.id;
+      return track.artists[0].id;
     });
   }
 
@@ -191,6 +238,7 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
   function buildGenreCounterFromArtists(artistIds) {
     return Spotify.getArtists(artistIds)
       .then((data) => {
+        console.log('Response data from getArtist:', data);
         let artists = data.artists;
         let genresList = [];
         let genresObj = {};
@@ -214,7 +262,9 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
           }
         }
 
-        return $q.resolve(genresObj);
+        genresList = getUniqueArrayItems(flatten(genresList));
+
+        return $q.resolve(genresList);
       });
   }
 
@@ -265,7 +315,8 @@ function UserPlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
     setSelectedPlaylist,
     getSelectedPlaylist,
     getAudioFeaturesForPlaylist,
-    getAudioFeaturesForSongIds
+    getAudioFeaturesForSongIds,
+    determineGenreFromLongPlaylist
   };
 }
 
