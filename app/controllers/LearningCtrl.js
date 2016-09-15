@@ -129,6 +129,14 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
         }
       });
   };
+
+  $scope.saveNetwork = () => {
+    PlaylistsFactory.saveNetwork(SynapticFactory.myNetwork);
+  };
+
+  $scope.loadNetwork = () => {
+    PlaylistsFactory.getNetwork($scope.playlist.id);
+  };
 }
 
 module.exports = LearningController;

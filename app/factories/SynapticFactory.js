@@ -19,6 +19,12 @@ function SynapticFactory(Spotify) {
     output: outputLayer
   });
 
+  function setNetwork(network) {
+    let key = Object.keys(network)[0];
+    let neuralNetwork = syn.Network.fromJSON(network[key].jsonNetwork);
+    myNetwork = neuralNetwork;
+  }
+
   /**
    * Trains the neural network with songs
    * @param  {Array<Float>} playlist   Song features for the playlist
@@ -70,6 +76,7 @@ function SynapticFactory(Spotify) {
     trainNetwork,
     makePrediction,
     myNetwork,
+    setNetwork,
     correctNetwork
   };
 }
