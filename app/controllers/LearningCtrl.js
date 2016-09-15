@@ -1,34 +1,25 @@
 'use strict';
 
 function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spotify, FirebaseFactory) {
-  $scope.user = PlaylistsFactory.user;
 
   $scope.playlist = PlaylistsFactory.getSelectedPlaylist();
 
   $scope.test = () => {
-    console.log('User:', $scope.user);
     console.log('Playlist:', $scope.playlist);
   };
 
-  $scope.firebaseTest = () => {
-    FirebaseFactory.getNegativeGenresSongFeatures(['bluegrass', 'country'])
-      .then((data) => {
-        console.log(data);
-      })
-  }
-
-  $scope.genreTest = () => {
-    console.log('$scope.playlist:', $scope.playlist);
-    PlaylistsFactory.collectSongDataForNeuralNetwork($scope.playlist)
-      .then((trainingData) => {
-        let startTime = new Date();
-        console.log('Started: training the network at ', startTime);
-        SynapticFactory.trainNetwork(trainingData.positive, trainingData.negative);
-        let endTime = new Date();
-        let timeDiff = (endTime - startTime)/1000;
-        console.info(`Completed training the network in ${timeDiff} seconds.`);
-      });
-  };
+  // $scope.genreTest = () => {
+  //   console.log('$scope.playlist:', $scope.playlist);
+  //   PlaylistsFactory.collectSongDataForNeuralNetwork($scope.playlist)
+  //     .then((trainingData) => {
+  //       let startTime = new Date();
+  //       console.log('Started: training the network at ', startTime);
+  //       SynapticFactory.trainNetwork(trainingData.positive, trainingData.negative);
+  //       let endTime = new Date();
+  //       let timeDiff = (endTime - startTime)/1000;
+  //       console.info(`Completed training the network in ${timeDiff} seconds.`);
+  //     });
+  // };
 
   // Stores the search results for display in the search results table
   $scope.searchResults = [];
@@ -135,7 +126,7 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
   };
 
   $scope.loadNetwork = () => {
-    PlaylistsFactory.getNetwork($scope.playlist.id);
+    PlaylistsFactory.buildNetwork($scope.playlist.id);
   };
 }
 

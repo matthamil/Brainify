@@ -3,6 +3,9 @@
 let syn = require('synaptic');
 
 function SynapticFactory(Spotify) {
+  let _networkFirebaseObj;
+
+
   // Creating the layers in the network
   let inputLayer = new syn.Layer(7);
   let hiddenLayer = new syn.Layer(3);
@@ -19,10 +22,28 @@ function SynapticFactory(Spotify) {
     output: outputLayer
   });
 
+  function buildNetwork() {
+    myNetwork = new syn.Network({
+      input: inputLayer,
+      hidden: [hiddenLayer],
+      output: outputLayer
+    });
+  }
+
   function setNetwork(network) {
     let key = Object.keys(network)[0];
+    _networkFirebaseObj = network[key];
     let neuralNetwork = syn.Network.fromJSON(network[key].jsonNetwork);
     myNetwork = neuralNetwork;
+  }
+
+  function getNetwork() {
+    return myNetwork;
+  }
+
+  function getNetworkFirebaseObj() {
+    _networkFirebaseObj.jsonNetwork = myNetwork.toJSON();
+    return _networkFirebaseObj;
   }
 
   /**
@@ -76,6 +97,9 @@ function SynapticFactory(Spotify) {
     trainNetwork,
     makePrediction,
     myNetwork,
+    buildNetwork,
+    getNetwork,
+    getNetworkFirebaseObj,
     setNetwork,
     correctNetwork
   };

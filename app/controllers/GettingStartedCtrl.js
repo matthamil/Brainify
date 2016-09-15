@@ -28,10 +28,10 @@ function GettingStartedController($scope, $location, PlaylistsFactory, UserSetti
 
   $scope.setSelectedPlaylist = (playlistId) => {
     PlaylistsFactory.setSelectedPlaylist(playlistId);
-    PlaylistsFactory.getAudioFeaturesForPlaylist(PlaylistsFactory.getSelectedPlaylist())
-      .then((data) => {
-        $location.url('/test');
-      });
+    // PlaylistsFactory.getAudioFeaturesForPlaylist(PlaylistsFactory.getSelectedPlaylist())
+      // .then((data) => {
+    $location.url('/test');
+      // });
   };
 
   $scope.changeViewToUserSettings = () => {
