@@ -1,6 +1,8 @@
 'use strict';
 
-function PlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
+const firebase = require('firebase');
+
+function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) {
   // Stores the user object upon login
   let user;
 
@@ -423,15 +425,101 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
     return genres;
   }
 
+
+  /**
+   * Converts a neural network into an object to be stored in Firebase
+   * @param  {Network} network Synaptic network
+   * @return {Object} Network object to be saved in Firebase
+   */
+  function buildNetworkObject(network) {
+    let uid = firebase.auth().currentUser.uid;
+    let playlistId = playlist.id;
+    return {
+      uid,
+      playlistId,
+      fbKey: '',
+      jsonNetwork: network.toJSON(),
+    };
+  }
+
+  /**
+   * Saves the trained neural network to Firebase
+   * @param  {Network} network Synaptic network
+   * @return {Promise} Resolves to object stored in Firebase
+   */
+  function saveNetwork(network) {
+    let networkObj = buildNetworkObject(network);
+    return $q((resolve, reject) => {
+      $http.post('https://brainify-ddc05.firebaseio.com/networks.json', angular.toJson(networkObj))
+        .success((objFromFirebase) => {
+          console.log('Success! Saved network in Firebase:', objFromFirebase);
+          resolve(objFromFirebase);
+        })
+        .error((error) => {
+          console.error('Failed to save network to Firebase:', error);
+          reject(error);
+        })
+    })
+    .then((firebaseObj) => {
+      // Extracting the unique Firebase key from the response
+      let patchData = { fbKey: firebaseObj.name };
+      // Save the changes to the network to Firebase
+      return modifyNetwork(patchData);
+    })
+  }
+
+  /**
+   * Updates an existing network in Firebase
+   * @param  {Object} modifiedNetworkObj
+   * @return {Promise} Resolves to the network object from Firebase
+   */
+  function modifyNetwork(modifiedNetworkObj) {
+    return $q((resolve, reject) => {
+      $http.patch(`https://brainify-ddc05.firebaseio.com/networks/${modifiedNetworkObj.fbKey}.json`, angular.toJson(modifiedNetworkObj))
+        .success((response) => {
+          console.log('Success! Updated network in Firebase:', response);
+          resolve(response);
+        })
+        .error((error) => {
+          console.error('Failed to update network in Firebase:', error);
+          reject(error);
+        });
+    });
+  }
+
+  /**
+   * Finds a network in Firebase
+   * @param  {String} playlistId Unique playlist id
+   * @return {Promise} Resolves to network from Firebase
+   */
+  function getNetwork(playlistId) {
+    return $q((resolve, reject) => {
+      $http.get(`https://brainify-ddc05.firebaseio.com/networks.json?orderBy="playlistId"&equalTo="${playlistId}"`)
+        .success((response) => {
+          console.log('Found network in Firebase:', response);
+          resolve(response);
+        })
+        .error((error) => {
+          console.error('Failed to get network from Firebase:', error);
+          reject(error);
+        });
+    })
+    .then((network) => {
+      SynapticFactory.setNetwork(network);
+    });
+  }
+
   return {
-    // user,
     getSpotifyUser,
     getUserInfo,
     setSelectedPlaylist,
     getSelectedPlaylist,
     getAudioFeaturesForPlaylist,
     getAudioFeaturesForSongIds,
-    collectSongDataForNeuralNetwork
+    collectSongDataForNeuralNetwork,
+    saveNetwork,
+    modifyNetwork,
+    getNetwork
   };
 }
 
