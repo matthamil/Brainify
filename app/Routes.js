@@ -12,7 +12,16 @@ function AppRoutes($routeProvider) {
     })
     .when('/getting-started', {
       templateUrl: 'partials/getting-started.html',
-      controller: 'GettingStartedCtrl'
+      controller: 'GettingStartedCtrl',
+    })
+    .when('/settings', {
+      templateUrl: 'partials/user-settings.html',
+      controller: 'UserSettingsCtrl',
+      resolve: {
+        user: function (UserSettingsFactory) {
+          return UserSettingsFactory.getCurrentUser();
+        }
+      }
     })
     .when('/test', {
       templateUrl: 'partials/learning-test.html',

@@ -2,8 +2,8 @@
 
 <div id="getting-started-wrapper" ng-init="loadUserInfo()" ng-show="!showSpinner">
   <nav>
-    <div class="current-user">
-      <a href="#">
+    <div class="current-user" ng-click="changeViewToUserSettings();">
+      <a>
         <ul>
           <li>{{user.display_name}}</li>
         </ul>
