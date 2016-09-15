@@ -1,0 +1,22 @@
+<h1>Don't forget the Navbar!</h1>
+
+<h1>Account Information</h1>
+
+<img class="img-thumbnail" ng-src="{{user.image}}" alt="{{user.display_name}}">
+<h1>{{user.display_name}}</h1>
+<p>Playlists: {{spotifyUser.playlists.length}}</p>
+<!-- <p>Brainify friends: {{user.friendCount}}</p> -->
+<label for="publicSettings">Public Profile:</label>
+<input type="checkbox" ng-checked="{{user.public}}" ng-model="user.public"/>
+
+<div class="playlists-area">
+  <h3>Your Playlists:</h3>
+  <hr/>
+  <div ng-repeat="playlist in spotifyUser.playlists" class="playlist" ng-click="">
+    <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}"/>
+    <ul>
+      <li>{{playlist.name}}</li>
+    </ul>
+    <div class="clearfix"></div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 'use strict';
 
-function GettingStartedController($scope, $location, PlaylistsFactory, Spotify) {
+function GettingStartedController($scope, $location, PlaylistsFactory, UserSettingsFactory, Spotify) {
   // Boolean to control loading animation
   $scope.showSpinner = true;
 
@@ -8,6 +8,11 @@ function GettingStartedController($scope, $location, PlaylistsFactory, Spotify) 
    * Loads the current user and the user's playlists
    */
   $scope.loadUserInfo = () => {
+    UserSettingsFactory.checkIfUserExistsOnLogin()
+      .then((user) => {
+        console.log('User in loadUserInfo in GettingStartedCtrl', user);
+        UserSettingsFactory.setCurrentUser(user);
+      });
     PlaylistsFactory.getUserInfo()
       .then((user) => {
         $scope.user = user;
@@ -28,6 +33,10 @@ function GettingStartedController($scope, $location, PlaylistsFactory, Spotify) 
         $location.url('/test');
       });
   };
+
+  $scope.changeViewToUserSettings = () => {
+    $location.url('/settings');
+  }
 }
 
 module.exports = GettingStartedController;

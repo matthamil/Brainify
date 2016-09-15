@@ -4,6 +4,8 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
   // Stores the user object upon login
   let user;
 
+  const getSpotifyUser = () => user;
+
   // Stores the user's selected playlist. Used to train a neural network.
   let playlist;
 
@@ -43,16 +45,16 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
    * @return {Array} Filtered array
    */
   function getUniqueArrayItems(a) {
-    var seen = {};
-    var out = [];
-    var len = a.length;
-    var j = 0;
-    for(var i = 0; i < len; i++) {
-         var item = a[i];
-         if(seen[item] !== 1) {
-               seen[item] = 1;
-               out[j++] = item;
-         }
+    let seen = {};
+    let out = [];
+    let len = a.length;
+    let j = 0;
+    for (let i = 0; i < len; i++) {
+      let item = a[i];
+      if(seen[item] !== 1) {
+        seen[item] = 1;
+        out[j++] = item;
+      }
     }
     return out;
   }
@@ -422,7 +424,8 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory) {
   }
 
   return {
-    user,
+    // user,
+    getSpotifyUser,
     getUserInfo,
     setSelectedPlaylist,
     getSelectedPlaylist,
