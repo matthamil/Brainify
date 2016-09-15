@@ -312,8 +312,11 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
 
       let trainingDataObj = {
         positive: positiveCase,
-        negative: randomNegative
+        negative: randomNegative,
+        positiveIds: playlist.songList.items.map(track => track.id);
       };
+
+      SynapticFactory.cacheTrainingData(trainingDataObj);
 
       console.log('Training data obj:', trainingDataObj);
 

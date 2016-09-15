@@ -4,6 +4,7 @@ let syn = require('synaptic');
 
 function SynapticFactory(Spotify) {
   let _networkFirebaseObj;
+  let _trainingDataCache;
 
 
   // Creating the layers in the network
@@ -44,6 +45,14 @@ function SynapticFactory(Spotify) {
   function getNetworkFirebaseObj() {
     _networkFirebaseObj.jsonNetwork = myNetwork.toJSON();
     return _networkFirebaseObj;
+  }
+
+  function cacheTrainingData(trainingDataObj) {
+    _trainingDataCache = trainingDataObj;
+  }
+
+  function getTrainingDataCache() {
+    return _trainingDataCache;
   }
 
   /**
@@ -101,7 +110,9 @@ function SynapticFactory(Spotify) {
     getNetwork,
     getNetworkFirebaseObj,
     setNetwork,
-    correctNetwork
+    correctNetwork,
+    cacheTrainingData,
+    getTrainingDataCache
   };
 }
 
