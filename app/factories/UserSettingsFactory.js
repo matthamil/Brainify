@@ -71,6 +71,7 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
         });
       })
       .then((firebaseResponse) => {
+        // Saves the unique Firebase key onto the object in Firebase
         let patchData = { fbKey: firebaseResponse.name };
         return modifyExistingUser(patchData);
       });
