@@ -1,54 +1,9 @@
 <div id="learning-test-wrapper">
-  <button type="button" ng-click="test()" class="btn btn-default">View User in Console</button>
-  <button type="button" ng-click="firebaseTest()" class="btn btn-default">Firebase Genre Loading Test</button>
-  <button type="button" ng-click="genreTest()" class="btn btn-primary">Train Network Automatically</button>
+  <button type="button" ng-click="test()" class="btn btn-default">View Playlist in Console</button>
+  <!-- <button type="button" ng-click="genreTest()" class="btn btn-primary">Train Network Automatically</button> -->
 
   <br/>
-  <!-- Manual Network Training -->
-  <div class="container">
 
-  <h1 style="color:white; text-align:center">Manual Training Controls</h1>
-  <input type="text" ng-model="songToSearch" placeholder="Search for a title"/>
-  <button type="button" class="btn btn-default" ng-click="searchSong(songToSearch)">
-    Search
-  </button>
-  <table class="table" style="color:white">
-    <thead>
-      <tr>
-        <th style="color:white">Title</th>
-        <th style="color:white">Artist</th>
-        <th style="color:white">Add To Training Data</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="song in searchResults">
-        <td style="color:white">{{song.name}}</td>
-        <td style="color:white">{{song.artists[0].name}}</td>
-        <td><button type="button" class="btn btn-default" ng-click="addToDummySongsArray(song)">Add</button>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2 style="color:white">Negative Case Song List</h2>
-  <table class="table" style="color:white">
-    <thead>
-      <tr>
-        <th style="color:white">Title</th>
-        <th style="color:white">Artist</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="song in dummySongs">
-        <td style="color:white">{{song.name}}</td>
-        <td style="color:white">{{song.artists[0].name}}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <button type="button" class="btn btn-success" ng-click="trainNetwork()">Train the Network</button>
-  </div>
-
-  <hr>
   <button class="btn btn-success" type="button" ng-click="saveNetwork()">Save Network</button>
   <button class="btn btn-default" type="button" ng-click="loadNetwork()">Load Network</button>
   <h1 style="text-align:center;color:white">Test the Network</h1>

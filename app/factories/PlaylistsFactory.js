@@ -432,8 +432,8 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
    * @return {Object} Network object to be saved in Firebase
    */
   function buildNetworkObject(network) {
-    let uid = firebase.auth().currentUser.uid;
-    let playlistId = playlist.id;
+    const uid = firebase.auth().currentUser.uid;
+    const playlistId = playlist.id;
     return {
       uid,
       playlistId,
@@ -448,7 +448,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
    * @return {Promise} Resolves to object stored in Firebase
    */
   function saveNetwork(network) {
-    let networkObj = buildNetworkObject(network);
+    const networkObj = buildNetworkObject(network);
     return $q((resolve, reject) => {
       $http.post('https://brainify-ddc05.firebaseio.com/networks.json', angular.toJson(networkObj))
         .success((objFromFirebase) => {
@@ -462,7 +462,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     })
     .then((firebaseObj) => {
       // Extracting the unique Firebase key from the response
-      let patchData = { fbKey: firebaseObj.name };
+      const patchData = { fbKey: firebaseObj.name };
       // Save the changes to the network to Firebase
       return modifyNetwork(patchData);
     })
@@ -496,7 +496,6 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     return $q((resolve, reject) => {
       $http.get(`https://brainify-ddc05.firebaseio.com/networks.json?orderBy="playlistId"&equalTo="${playlistId}"`)
         .success((response) => {
-          console.log('Found network in Firebase:', response);
           resolve(response);
         })
         .error((error) => {
@@ -505,8 +504,28 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
         });
     })
     .then((network) => {
+      if (Object.keys(network).length === 0) {
+        return $q.reject(network);
+      }
       SynapticFactory.setNetwork(network);
+      return $q.resolve(new Date());
+    })
+    .catch((error) => {
+      console.error(`Network with playlist ID ${playlistId} does not exist in Firebase. Creating new network in Firebase.`);
+      return initialNetworkSetup();
     });
+  }
+
+  function initialNetworkSetup() {
+    return collectSongDataForNeuralNetwork(playlist)
+      .then((trainingData) => {
+        const beginTraining = new Date();
+        SynapticFactory.trainNetwork(trainingData.positive, trainingData.negative);
+        const endTraining = new Date();
+        const timeTraining = (endTraining - beginTraining)/1000;
+        console.info(`Completed training the network in ${timeTraining} seconds.`);
+        return saveNetwork(SynapticFactory.getNetwork());
+      });
   }
 
   return {

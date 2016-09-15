@@ -25,7 +25,19 @@ function AppRoutes($routeProvider) {
     })
     .when('/test', {
       templateUrl: 'partials/learning-test.html',
-      controller: 'LearningCtrl'
+      controller: 'LearningCtrl',
+      resolve: {
+        network: function (PlaylistsFactory) {
+          const playlist = PlaylistsFactory.getSelectedPlaylist();
+          const startTime = new Date();
+          console.log('Started: Setting up the network at ', startTime);
+          return PlaylistsFactory.getNetwork(playlist.id)
+            .then((endTime) => {
+              const timeDiff = (endTime - startTime)/1000;
+              console.info(`Completed setting up the network in ${timeDiff} seconds.`);
+            });
+        }
+      }
     })
     .otherwise('/');
 
