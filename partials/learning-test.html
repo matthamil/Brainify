@@ -4,8 +4,6 @@
 
   <br/>
 
-  <button class="btn btn-success" type="button" ng-click="saveNetwork()">Save Network</button>
-  <button class="btn btn-default" type="button" ng-click="loadNetwork()">Load Network</button>
   <h1 style="text-align:center;color:white">Test the Network</h1>
   <input type="text" ng-model="songToPredict" placeholder="Search for a title"/>
   <div style="display:inline-block;color:white" ng-show="songToPredictSearchResult">{{songToPredictSearchResult.name}} by {{songToPredictSearchResult.artists[0].name}}</div>
@@ -20,14 +18,13 @@
   </button>
 
   <div>
-    <h1 style="color:white">Score: {{songPredictionResult[0]}}</h1>
+    <h1 style="color:white">Score: {{songPredictionResult}}</h1>
 
-    <button type="button" class="btn btn-success" ng-click="resetPredictionSearch()">Correct</button>
-    <button type="button" class="btn btn-danger" ng-click="networkGuessedWrong()">Wrong</button>
+    <button type="button" class="btn btn-success" ng-click="correctGuess()">Correct</button>
+    <button type="button" class="btn btn-danger" ng-click="wrongGuess()">Wrong</button>
 
-    <div ng-show="showHowToFix">
-      <input style="min-width: 100px" placeholder="Enter correct answer..." ng-model="correctResponse" type="number" min=0 max=1>
-      <button type="button" class="btn btn-primary" ng-click="correctNetwork()">Retrain</button>
+    <div ng-show="clickedCorrectOrWrong">
+      <button type="button" class="btn btn-success" ng-click="saveToPlaylist()">Save to Playlist</button>
     </div>
   </div>
 

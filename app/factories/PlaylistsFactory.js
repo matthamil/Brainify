@@ -205,53 +205,54 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
   }
 
   /**
+   * TODO: DEPRECATED FUNCTION
    * Converts a list of genres into a list of track IDs
    * @param  {Array<string>} genresArray List of genres
    * @return {Promise} Resolves to a list of track IDs
    */
-  function getRecommendationsFromPlaylistGenres(genresArray) {
+  // function getRecommendationsFromPlaylistGenres(genresArray) {
 
-    genresArray = getUniqueArrayItems(
-      genresArray.map((genre) => {
-        return genre.split(' ')[0].replace(/\s/g, '%20');
-      })
-    );
+  //   genresArray = getUniqueArrayItems(
+  //     genresArray.map((genre) => {
+  //       return genre.split(' ')[0].replace(/\s/g, '-');
+  //     })
+  //   );
 
-    genres.setList(genresArray);
+  //   // genres.setList(genresArray);
 
-    return $q.all(
-      genresArray.map((genre) => {
-        return Spotify.getRecommendations({ seed_genres: genre, limit: 30 });
-      })
-    )
-    .then((data) => {
-      // Only keep responses that have songs recommended.
-      // Some recommendations return no songs.
-      let filteredData = data.filter((response) => {
-        return response.tracks.length > 0;
-      });
+  //   return $q.all(
+  //     genresArray.map((genre) => {
+  //       return Spotify.getRecommendations({ seed_genres: genre, limit: 30 });
+  //     })
+  //   )
+  //   .then((data) => {
+  //     // Only keep responses that have songs recommended.
+  //     // Some recommendations return no songs.
+  //     let filteredData = data.filter((response) => {
+  //       return response.tracks.length > 0;
+  //     });
 
-      let trackIds = flatten(
-        filteredData.map((responseObj) => {
-          return convertRecommendationsToTrackIdList(responseObj.tracks);
-        })
-      );
-      console.log('Track IDs from recommendations from user\'s playlist:', trackIds);
+  //     let trackIds = flatten(
+  //       filteredData.map((responseObj) => {
+  //         return convertRecommendationsToTrackIdList(responseObj.tracks);
+  //       })
+  //     );
+  //     console.log('Track IDs from recommendations from user\'s playlist:', trackIds);
 
-      if (trackIds.length > 100) {
-        trackIds.slice(0, 100);
-      }
+  //     if (trackIds.length > 100) {
+  //       trackIds.slice(0, 100);
+  //     }
 
-      return $q.resolve(trackIds);
-    })
-    .then((trackIds) => {
-      return Spotify.getTracksAudioFeatures(trackIds);
-    })
-    .then((audioFeaturesObj) => {
-      let featuresArray = audioFeaturesObj.audio_features.map(constructVectorFromObj);
-      return $q.resolve(featuresArray);
-    });
-  }
+  //     return $q.resolve(trackIds);
+  //   })
+  //   .then((trackIds) => {
+  //     return Spotify.getTracksAudioFeatures(trackIds);
+  //   })
+  //   .then((audioFeaturesObj) => {
+  //     let featuresArray = audioFeaturesObj.audio_features.map(constructVectorFromObj);
+  //     return $q.resolve(featuresArray);
+  //   });
+  // }
 
   /**
    * Determines the predominant genre in a playlist with over 20 songs.
@@ -276,17 +277,21 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     console.log('Shortened artist ID list:', shortenedArtistIds);
 
     return buildGenreListFromArtists(shortenedArtistIds);
-        // TODO: Move this function call into a separate function
-        // return FirebaseFactory.getNegativeGenresSongFeatures(determinedGenres);
   }
 
   function collectSongDataForNeuralNetwork(playlist) {
     let positiveCase = [];
     let negativeCase = [];
     return determineGenreFromPlaylist(playlist)
-    .then((genres) => {
+    .then((genresFound) => {
       console.log('Genres found in user playlist:', genres);
-      return getRecommendationsFromPlaylistGenres(genres);
+      const genresArray = getUniqueArrayItems(
+        genresFound.map((genre) => {
+          return genre.replace(/\s/g, '-');
+        })
+      );
+      genres.setList(genresArray);
+      // return getRecommendationsFromPlaylistGenres(genres);
     })
     // .then((audioFeaturesArray) => {
       // From 'guessing the genre'
@@ -312,8 +317,12 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
 
       let trainingDataObj = {
         positive: positiveCase,
-        negative: randomNegative
+        negative: randomNegative,
+        positive_ids: playlist.songList.items.map(song => song.track.id),
+        negative_ids: ['empty']
       };
+
+      SynapticFactory.cacheTrainingData(trainingDataObj);
 
       console.log('Training data obj:', trainingDataObj);
 
@@ -356,26 +365,26 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
         console.log('Response data from getArtist:', data);
         let artists = data.artists;
         let genresList = [];
-        let genresObj = {};
+        // let genresObj = {};
 
         // Accumulate the list of each genre
         artists.forEach((artist) => {
           genresList.push(artist.genres);
         });
 
-        // Convert the list into a counter object
-        for (let i = 0; i < genresList.length; i++) {
-          for (let j = 0; j < genresList[i]; j++) {
-            // If the genre does not exist on the object
-            if (!genresObj[genresList[i][j]]) {
-              genresObj[genresList[i][j]] = 1;
-            }
-            // If the genre does exist on the object
-            else {
-              genresObj[genresList[i][j]]++;
-            }
-          }
-        }
+        // // Convert the list into a counter object
+        // for (let i = 0; i < genresList.length; i++) {
+        //   for (let j = 0; j < genresList[i]; j++) {
+        //     // If the genre does not exist on the object
+        //     if (!genresObj[genresList[i][j]]) {
+        //       genresObj[genresList[i][j]] = 1;
+        //     }
+        //     // If the genre does exist on the object
+        //     else {
+        //       genresObj[genresList[i][j]]++;
+        //     }
+        //   }
+        // }
 
         genresList = getUniqueArrayItems(flatten(genresList));
 
@@ -437,8 +446,9 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     return {
       uid,
       playlistId,
+      trainingData: network.trainingData,
       fbKey: '',
-      jsonNetwork: network.toJSON(),
+      jsonNetwork: network.jsonNetwork,
     };
   }
 
@@ -484,6 +494,9 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
           console.error('Failed to update network in Firebase:', error);
           reject(error);
         });
+    })
+    .then(() => {
+      return getNetwork(playlist.id);
     });
   }
 
@@ -493,6 +506,8 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
    * @return {Promise} Resolves to network from Firebase
    */
   function getNetwork(playlistId) {
+    let foundNetwork;
+    let key;
     return $q((resolve, reject) => {
       $http.get(`https://brainify-ddc05.firebaseio.com/networks.json?orderBy="playlistId"&equalTo="${playlistId}"`)
         .success((response) => {
@@ -507,8 +522,18 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
       if (Object.keys(network).length === 0) {
         return $q.reject(network);
       }
-      SynapticFactory.setNetwork(network);
-      return $q.resolve(new Date());
+      console.log('Saved network found:', network);
+      foundNetwork = network;
+      // SynapticFactory.setNetwork(network);
+      // return $q.resolve(new Date());
+      key = Object.keys(network)[0];
+      return getNetworkTrainingData(key);
+    })
+    .then((trainingData) => {
+      console.log('should be trainingData:', trainingData);
+      console.log('Should be inside object:', foundNetwork[key]);
+      foundNetwork[key].trainingData = trainingData;
+      return $q.resolve(SynapticFactory.setNetwork(foundNetwork));
     })
     .catch((error) => {
       console.error(`Network with playlist ID ${playlistId} does not exist in Firebase. Creating new network in Firebase.`);
@@ -516,7 +541,21 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     });
   }
 
-  function initialNetworkSetup() {
+  function getNetworkTrainingData(networkFbKey) {
+    return $q((resolve, reject) => {
+      $http.get(`https://brainify-ddc05.firebaseio.com/networks/${networkFbKey}/trainingData.json`)
+        .success((response) => {
+          console.log(`Training data found for Network with Firebase Key ${networkFbKey}:`, response);
+          resolve(response);
+        })
+        .error((error) => {
+          console.error('Failed to get network from Firebase:', error);
+          reject(error);
+        });
+    })
+  }
+
+  function initialNetworkSetup(isNewNetwork = true) {
     return collectSongDataForNeuralNetwork(playlist)
       .then((trainingData) => {
         const beginTraining = new Date();
@@ -524,7 +563,26 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
         const endTraining = new Date();
         const timeTraining = (endTraining - beginTraining)/1000;
         console.info(`Completed training the network in ${timeTraining} seconds.`);
-        return saveNetwork(SynapticFactory.getNetwork());
+        if (isNewNetwork) {
+          return saveNetwork(SynapticFactory.getNetworkFirebaseObj());
+        } else {
+          return modifyNetwork(SynapticFactory.getNetworkFirebaseObj())
+        }
+      })
+      .then((networkFromFirebase) => {
+        // console.log('Network from firebase:', networkFromFirebase);
+        // SynapticFactory.setNetwork(networkFromFirebase);
+        $q.resolve(new Date())
+      });
+  }
+
+  function resetAndUpdateNetwork() {
+    SynapticFactory.networkResetHard()
+      .then((isFirstTimeSetup) => {
+        return PlaylistsFactory.initialNetworkSetup(isFirstTimeSetup);
+      })
+      .then((network) => {
+        SynapticFactory.setNetwork(network);
       });
   }
 
