@@ -139,14 +139,27 @@ function SynapticFactory($q, Spotify) {
    * Predicts if the song should be in the playlist.
    * The neural network MUST be trained prior.
    *
-   * @param  {Array<float>} song
+   * @param {Array<float>} song
    *     Song features array from Spotify
+   * @param {String} songId Spotify song ID
    * @return {Array<float>}
    *     Array with a number between 0 and 1. 0 representing the network guessed
    *     that the song does not fit. 1 representing the network guessed that the
    *     song does fit.
    */
-  function makePrediction(song) {
+  function makePrediction(song, songId) {
+    if (_networkFirebaseObj.trainingData.positive_ids.indexOf(songId) >= 0) {
+      console.log('Found song in positive training data cache:', songId);
+      return [1];
+    }
+
+    else if (_networkFirebaseObj.trainingData.negative_ids.indexOf(songId) >= 0) {
+      console.log('Found song in negative training data cache:', songId);
+      return [0];
+    }
+
+    console.log(`Could not find song in training data. Testing network with new song ${songId}.`);
+
     console.log('song to make a prediction for:', song[0]);
     let results = [];
 
