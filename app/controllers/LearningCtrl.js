@@ -4,43 +4,20 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
 
   $scope.playlist = PlaylistsFactory.getSelectedPlaylist();
 
+  const user = PlaylistsFactory.getSpotifyUser();
+
   $scope.test = () => {
     console.log('Playlist:', $scope.playlist);
   };
 
-  // $scope.genreTest = () => {
-  //   console.log('$scope.playlist:', $scope.playlist);
-  //   PlaylistsFactory.collectSongDataForNeuralNetwork($scope.playlist)
-  //     .then((trainingData) => {
-  //       let startTime = new Date();
-  //       console.log('Started: training the network at ', startTime);
-  //       SynapticFactory.trainNetwork(trainingData.positive, trainingData.negative);
-  //       let endTime = new Date();
-  //       let timeDiff = (endTime - startTime)/1000;
-  //       console.info(`Completed training the network in ${timeDiff} seconds.`);
-  //     });
-  // };
-
   // Stores the search results for display in the search results table
   $scope.searchResults = [];
-
-  // Stores the ids for each dummy song
-  $scope.dummySongIds = [];
-
-  // Stores full info on each dummy song
-  $scope.dummySongs = [];
 
   // Search input
   $scope.songToSearch = '';
 
-  $scope.addToDummySongsArray = (song) => {
-    $scope.dummySongs.push(song);
-    $scope.dummySongIds.push(song.id);
-    console.log('Dummy songs so far:', $scope.dummySongs);
-    $scope.searchResults = [];
-  };
-
   $scope.searchSong = (title) => {
+    $scope.clickedCorrectOrWrong = false;
     // Find dummy song ID
     // Get features for dummy song
     Spotify.search(title, 'track', {limit: 3})
@@ -100,6 +77,7 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
     Spotify.search($scope.songToPredict, 'track', {limit: 1})
       .then((data) => {
         console.log(data);
+        $scope.lastSearchResult = data.tracks.items[0];
         $scope.songToPredictSearchResult = data.tracks.items[0];
         return $q.resolve([data.tracks.items[0].id]);
       })
@@ -107,8 +85,8 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
         return PlaylistsFactory.getAudioFeaturesForSongIds(arr);
       })
       .then((featuresVector) => {
-        songToPredictFeatures = featuresVector;
-        $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector);
+        $scope.predictedSongFeatures = featuresVector[0];
+        $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector)[0];
         $scope.didPredict = true;
         console.log('Prediction:', $scope.songPredictionResult);
         if (Math.round($scope.songPredictionResult)) {
@@ -121,13 +99,58 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
       });
   };
 
-  $scope.saveNetwork = () => {
-    PlaylistsFactory.saveNetwork(SynapticFactory.myNetwork);
+  $scope.clickedCorrectOrWrong = false;
+
+  $scope.correctGuess = () => {
+    SynapticFactory.declareCorrectPrediction(
+      $scope.songPredictionResult,
+      $scope.predictedSongFeatures,
+      $scope.lastSearchResult.id
+    );
+    $scope.clickedCorrectOrWrong = true;
+    console.log('getNetworkFirebaseObj:', SynapticFactory.getNetworkFirebaseObj());
+    PlaylistsFactory.modifyNetwork(SynapticFactory.getNetworkFirebaseObj())
+      .then((objFromFirebase) => {
+        console.log('Updated network in Firebase after correct guess:', objFromFirebase);
+        SynapticFactory.setNetwork(objFromFirebase);
+        setReadyStateForNextSearch();
+      });
   };
 
-  $scope.loadNetwork = () => {
-    PlaylistsFactory.buildNetwork($scope.playlist.id);
+  $scope.wrongGuess = () => {
+    SynapticFactory.declareWrongPrediction(
+      $scope.songPredictionResult,
+      $scope.predictedSongFeatures,
+      $scope.lastSearchResult.id
+    );
+    $scope.clickedCorrectOrWrong = true;
+    PlaylistsFactory.modifyNetwork(SynapticFactory.getNetworkFirebaseObj())
+      .then((objFromFirebase) => {
+        console.log('Updated network in Firebase after wrong guess:', objFromFirebase);
+        SynapticFactory.setNetwork(objFromFirebase);
+        setReadyStateForNextSearch();
+      });
   };
+
+  function setReadyStateForNextSearch() {
+    $scope.songPredictionResult = undefined;
+    $scope.predictedSongFeatures = undefined;
+    $scope.lastSearchResult = undefined;
+  }
+
+  $scope.hardReset = () => {
+    PlaylistsFactory.resetAndUpdateNetwork();
+  }
+
+  $scope.saveToPlaylist = () => {
+    $scope.clickedCorrectOrWrong = false;
+    // Note: Neural network has been retrained prior to adding to the playlist.
+    Spotify.addPlaylistTracks(user.id, $scope.playlist.id, $scope.lastSearchResult.uri)
+      .then((response) => {
+        console.info(`Saved song to playlist ${$scope.playlist.id}`)
+        $scope.lastSearchResult = undefined;
+      });
+  }
 }
 
 module.exports = LearningController;

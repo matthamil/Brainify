@@ -18,14 +18,13 @@
   </button>
 
   <div>
-    <h1 style="color:white">Score: {{songPredictionResult[0]}}</h1>
+    <h1 style="color:white">Score: {{songPredictionResult}}</h1>
 
-    <button type="button" class="btn btn-success" ng-click="resetPredictionSearch()">Correct</button>
-    <button type="button" class="btn btn-danger" ng-click="networkGuessedWrong()">Wrong</button>
+    <button type="button" class="btn btn-success" ng-click="correctGuess()">Correct</button>
+    <button type="button" class="btn btn-danger" ng-click="wrongGuess()">Wrong</button>
 
-    <div ng-show="showHowToFix">
-      <input style="min-width: 100px" placeholder="Enter correct answer..." ng-model="correctResponse" type="number" min=0 max=1>
-      <button type="button" class="btn btn-primary" ng-click="correctNetwork()">Retrain</button>
+    <div ng-show="clickedCorrectOrWrong">
+      <button type="button" class="btn btn-success" ng-click="saveToPlaylist()">Save to Playlist</button>
     </div>
   </div>
 
