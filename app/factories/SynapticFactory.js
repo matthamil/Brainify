@@ -2,7 +2,7 @@
 
 let syn = require('synaptic');
 
-function SynapticFactory(Spotify) {
+function SynapticFactory($q, Spotify) {
   let _networkFirebaseObj = {};
   let _trainingDataCache;
 
@@ -65,7 +65,7 @@ function SynapticFactory(Spotify) {
 
   function getNetworkFirebaseObj() {
     _networkFirebaseObj.jsonNetwork = myNetwork.toJSON();
-    _networkFirebaseObj.trainingData = _trainingDataCache;
+    // _networkFirebaseObj.trainingData = _trainingDataCache;
     console.log('_networkFirebaseObj in getNetworkFirebaseObj:', _networkFirebaseObj);
     return _networkFirebaseObj;
   }
@@ -204,6 +204,7 @@ function SynapticFactory(Spotify) {
     buildNetwork();
     // Generate new random negative songs and train
     const isFirstTimeSetup = false;
+    _trainingDataCache = {};
     return $q.resolve(isFirstTimeSetup);
   }
 

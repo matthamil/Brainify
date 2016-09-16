@@ -541,6 +541,20 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     });
   }
 
+  function deleteNetwork(networkFbKey) {
+    return $q((resolve, reject) => {
+      $http.delete(`https://brainify-ddc05.firebaseio.com/networks/${networkFbKey}.json`)
+        .success((response) => {
+          console.log(`Deleted network with Firebase Key ${networkFbKey}!`);
+          resolve(response);
+        })
+        .error((error) => {
+          console.error('Failed to delete network from Firebase:', error);
+          reject(error);
+        });
+    });
+  }
+
   function getNetworkTrainingData(networkFbKey) {
     return $q((resolve, reject) => {
       $http.get(`https://brainify-ddc05.firebaseio.com/networks/${networkFbKey}/trainingData.json`)
@@ -558,6 +572,9 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
   function initialNetworkSetup(isNewNetwork = true) {
     return collectSongDataForNeuralNetwork(playlist)
       .then((trainingData) => {
+        console.log('trainingData inside initialNetworkSetup:', trainingData);
+        SynapticFactory.cacheTrainingData(trainingData);
+        console.log('Training Data in SynapticFactory cache:', SynapticFactory.getNetworkFirebaseObj());
         const beginTraining = new Date();
         SynapticFactory.trainNetwork(trainingData.positive, trainingData.negative);
         const endTraining = new Date();
@@ -572,23 +589,28 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
       .then((networkFromFirebase) => {
         // console.log('Network from firebase:', networkFromFirebase);
         // SynapticFactory.setNetwork(networkFromFirebase);
-        $q.resolve(new Date())
+        return $q.resolve(new Date())
       });
   }
 
   function resetAndUpdateNetwork() {
-    SynapticFactory.networkResetHard()
+    deleteNetwork(SynapticFactory.getNetworkFirebaseObj().fbKey)
+      .then(() => {
+        return SynapticFactory.networkResetHard()
+      })
       .then((isFirstTimeSetup) => {
-        return PlaylistsFactory.initialNetworkSetup(isFirstTimeSetup);
+        return initialNetworkSetup();
       })
       .then((network) => {
         SynapticFactory.setNetwork(network);
+        console.log('Network has been reset!', network);
       });
   }
 
   return {
     getSpotifyUser,
     getUserInfo,
+    resetAndUpdateNetwork,
     setSelectedPlaylist,
     getSelectedPlaylist,
     getAudioFeaturesForPlaylist,
