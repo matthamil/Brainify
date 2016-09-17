@@ -4,6 +4,13 @@ const firebase = require('firebase');
 
 function FirebaseFactory($q, $http, $cacheFactory) {
 
+  /**
+   * Gets song features for a specific genre from Firebase
+   * @param {String} genre
+   *     Name of a valid genre
+   * @return {Promise}
+   *     Resolves to the genre's set of song features
+   */
   function getSongFeaturesFromGenre(genre) {
     return $q((resolve, reject) => {
       $http.get(`https://brainify-ddc05.firebaseio.com/-KRQvqIBCFfxEsFaovny/${genre}.json`)
@@ -18,9 +25,11 @@ function FirebaseFactory($q, $http, $cacheFactory) {
   }
 
   /**
-   * Returns negative genre song features
-   * @param  {Array} genreList Return value from PlaylistFactory.getNegativeGenres
-   * @return {Promise} Resolves to 2D array of song features
+   * Gets negative genre song features based on a list of positive genres
+   * @param  {Array} genreList
+   *     Return from PlaylistFactory.getNegativeGenres
+   * @return {Promise}
+   *     Resolves to 2D array of song features for all negative genres
    */
   function getNegativeGenresSongFeatures(genreList) {
     return $q((resolve, reject) => {
@@ -65,8 +74,8 @@ function FirebaseFactory($q, $http, $cacheFactory) {
     }
 
   return {
-    getSongFeaturesFromGenre,
-    getNegativeGenresSongFeatures
+    getNegativeGenresSongFeatures,
+    getSongFeaturesFromGenre
   };
 }
 

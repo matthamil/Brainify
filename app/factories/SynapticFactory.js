@@ -3,8 +3,12 @@
 let syn = require('synaptic');
 
 function SynapticFactory($q, Spotify) {
+  // Cache for the network object saved in Firebase
   let _networkFirebaseObj = {};
+  // Cache for the network's training data
   let _trainingDataCache;
+  // Cache for all other playlist's neural networks
+  let _allOtherNetworks;
 
   // Creating the layers in the network
   let inputLayer = new syn.Layer(7);
@@ -22,6 +26,7 @@ function SynapticFactory($q, Spotify) {
     output: outputLayer
   });
 
+  // Building a new neural network
   function buildNetwork() {
     // Creating the layers in the network
     let inputLayer = new syn.Layer(7);
@@ -39,8 +44,6 @@ function SynapticFactory($q, Spotify) {
     });
   }
 
-  let _allOtherNetworks;
-
   function cacheAllOtherNetworks(networksArray) {
     _allOtherNetworks = networksArray;
   }
@@ -49,8 +52,16 @@ function SynapticFactory($q, Spotify) {
     networkObj.jsonNetwork = syn.Network.fromJSON(networkObj.jsonNetwork);
   }
 
+  /**
+   * Makes all other networks take a guess for the searched song
+   * @param {Array<float>} songFeaturesArray
+   *     Array of song features for the searched song
+   * @param {String} songId
+   *     Spotify song id
+   * @returns {Array<object>}
+   *     Contains an array of results for each neural network
+   */
   function makePredictionAllOtherNetworks(songFeaturesArray, songId) {
-    debugger;
     console.log('songFeaturesArray:', songFeaturesArray);
     if (!_allOtherNetworks) {
       throw Error (`Failed to make predictions on all networks! All other networks are ${_allOtherNetworks}!`);
@@ -65,7 +76,6 @@ function SynapticFactory($q, Spotify) {
         console.log(`Found song in positive training data cache of ${networkObj.name}`);
       }
       else {
-        debugger;
         return {
           result: networkObj.jsonNetwork.activate(songFeaturesArray[0])[0],
           name: networkObj.name,
@@ -76,6 +86,13 @@ function SynapticFactory($q, Spotify) {
     return resultsArray;
   }
 
+  /**
+   * Caches and sets the current neural network. Network must be properly
+   * set before attempting to predict a song's fit.
+   * @param {Object} network
+   *     Synaptic neural network
+   * @return {void}
+   */
   function setNetwork(network) {
     if (!network || Object.keys(network).length === 0) { return; }
     console.log('network inside setNetwork:', network);
@@ -117,11 +134,11 @@ function SynapticFactory($q, Spotify) {
 
   /**
    * Trains the neural network with songs
-   *
    * @param  {Array<float>} playlist
    *     Song features for the playlist
    * @param  {Array<float>} dummySongs
    *     Song features for nonplaylist songs
+   * @return {void}
    */
   let trainNetwork = (playlist, dummySongs) => {
     // Training the network
@@ -139,25 +156,13 @@ function SynapticFactory($q, Spotify) {
     }
   };
 
-  // TODO: DEPRECATED FUNCTION.
-  // USE: retrainNetworkWithNewSong
-  let correctNetwork = (song, value) => {
-    console.log('Retraining network...');
-    myNetwork.activate(song[0]);
-    for (let i = 0; i < 100; i++) {
-      myNetwork.propagate(0.01, [value]);
-    }
-    console.log('Done correcting network!');
-  };
-
   /**
    * Resets the current neural network and retrains it
-   *
    * @param  {Array<string>} songFeaturesArray
    *     List of song features for a searched song
    * @param  {String} songId
    *     Spotify song ID
-   * @param  {Integer} value
+   * @param  {Number} value
    *     0, representing a negative result, or 1, representing a positive result
    * @return {Promise}
    *     Resolves to _networkFirebaseObj
@@ -175,10 +180,10 @@ function SynapticFactory($q, Spotify) {
   /**
    * Predicts if the song should be in the playlist.
    * The neural network MUST be trained prior.
-   *
    * @param {Array<float>} song
    *     Song features array from Spotify
-   * @param {String} songId Spotify song ID
+   * @param {String} songId
+   *     Spotify song ID
    * @return {Array<float>}
    *     Array with a number between 0 and 1. 0 representing the network guessed
    *     that the song does not fit. 1 representing the network guessed that the
@@ -211,6 +216,17 @@ function SynapticFactory($q, Spotify) {
     return Math.round(value);
   }
 
+  /**
+   * Used when the user says that the network has guessed wrong.
+   * The network will retrain with the proper value.
+   * @param {Number} value
+   *     The network's first guess
+   * @param {Array<float>} songFeaturesArray
+   *     Song features for the song
+   * @param {String} songId
+   *     Spotify song id
+   * @return {void}
+   */
   function declareWrongPrediction(value, songFeaturesArray, songId) {
     let correctValue;
 
@@ -223,6 +239,17 @@ function SynapticFactory($q, Spotify) {
     retrainNetworkWithNewSong(songFeaturesArray, songId, correctValue);
   }
 
+  /**
+   * Used when the user says that the network has guessed correctly.
+   * The network will add the song to its knowledge base and retrain itself.
+   * @param {Number} value
+   *     The network's correct guess
+   * @param {Array<float>} songFeaturesArray
+   *     Song features for the song
+   * @param {String} songId
+   *     Spotify song id
+   * @return {void}
+   */
   function declareCorrectPrediction(value, songFeaturesArray, songId) {
     console.log('Value:', value);
     console.log('songFeaturesArray:', songFeaturesArray);
@@ -259,23 +286,22 @@ function SynapticFactory($q, Spotify) {
   }
 
   return {
-    trainNetwork,
-    makePrediction,
-    makePredictionAllOtherNetworks,
-    myNetwork,
-    convertFromJsonNetwork,
-    cacheAllOtherNetworks,
     buildNetwork,
+    cacheAllOtherNetworks,
+    cacheTrainingData,
+    convertFromJsonNetwork,
+    correctNetwork,
+    declareCorrectPrediction,
+    declareWrongPrediction,
     getNetwork,
     getNetworkFirebaseObj,
-    setNetwork,
-    networkResetHard,
-    correctNetwork,
-    cacheTrainingData,
     getTrainingDataCache,
+    makePrediction,
+    makePredictionAllOtherNetworks,
+    networkResetHard,
     retrainNetworkWithNewSong,
-    declareCorrectPrediction,
-    declareWrongPrediction
+    setNetwork,
+    trainNetwork
   };
 }
 
