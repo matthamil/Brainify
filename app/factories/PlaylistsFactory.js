@@ -446,6 +446,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     return {
       uid,
       playlistId,
+      name: playlist.name,
       trainingData: network.trainingData,
       fbKey: '',
       jsonNetwork: network.jsonNetwork,
@@ -607,6 +608,31 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
       });
   }
 
+  function loadAllOtherNetworks() {
+    return $q((resolve, reject) => {
+      $http.get(`https://brainify-ddc05.firebaseio.com/networks.json?orderBy="uid"&equalTo="${firebase.auth().currentUser.uid}"`)
+        .success((response) => {
+          console.log(`Found all networks in Firebase with Firebase uid ${firebase.auth().currentUser.uid}:`, response);
+          resolve(response);
+        })
+        .error((error) => {
+          console.error('Failed to get network from Firebase:', error);
+          reject(error);
+        });
+    })
+    .then((responseObj) => {
+      let keys = Object.keys(responseObj);
+      let networksArray = keys.map((key) => {
+        return responseObj[key];
+      })
+      .filter((networkObj) => {
+        return networkObj.fbKey !== SynapticFactory.getNetworkFirebaseObj().fbKey;
+      });
+      networksArray.forEach(SynapticFactory.convertFromJsonNetwork);
+      SynapticFactory.cacheAllOtherNetworks(networksArray);
+    })
+  }
+
   return {
     getSpotifyUser,
     getUserInfo,
@@ -618,7 +644,8 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     collectSongDataForNeuralNetwork,
     saveNetwork,
     modifyNetwork,
-    getNetwork
+    getNetwork,
+    loadAllOtherNetworks
   };
 }
 

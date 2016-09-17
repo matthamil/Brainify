@@ -30,6 +30,7 @@ function AppRoutes($routeProvider) {
         network: function (PlaylistsFactory) {
           const playlist = PlaylistsFactory.getSelectedPlaylist();
           return PlaylistsFactory.getNetwork(playlist.id)
+            .then(() => PlaylistsFactory.loadAllOtherNetworks());
         }
       }
     })
