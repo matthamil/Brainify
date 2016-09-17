@@ -12,10 +12,9 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
    *     Current user object from Firebase
    */
   function getCurrentUser() {
-      // Return the object nested in the unique Firebase key
-      let key = Object.keys(_currentUser)[0];
-      return _currentUser[key];
-    }
+    // Return the object nested in the unique Firebase key
+    let key = Object.keys(_currentUser)[0];
+    return _currentUser[key];
   }
 
   function setCurrentUser(userObj) {
@@ -40,7 +39,7 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
       image: spotifyUser.images[0].url,
       uid: firebaseUser.uid,
       fbKey: ''
-    }
+    };
   }
 
   /**

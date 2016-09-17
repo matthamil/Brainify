@@ -290,7 +290,6 @@ function SynapticFactory($q, Spotify) {
     cacheAllOtherNetworks,
     cacheTrainingData,
     convertFromJsonNetwork,
-    correctNetwork,
     declareCorrectPrediction,
     declareWrongPrediction,
     getNetwork,

@@ -9,6 +9,7 @@ function SpotifyLoginController($scope, $location, Spotify) {
   $scope.login = () => {
     Spotify.login()
       .then((data) => {
+        console.log('Data from Spotify login:', data);
         // Reroute the user once logged in
         $location.url('/getting-started');
       })

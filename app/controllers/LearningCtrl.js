@@ -50,13 +50,14 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
 
   $scope.songToPredict = '';
 
-  $scope.resetPredictionSearch = () => {
-    $scope.songToPredict = '';
-    $scope.songToPredictSearchResult = false;
-    SynapticFactory.correctNetwork(songToPredictFeatures, Math.round($scope.songPredictionResult));
-    $scope.correct = false;
-    $scope.incorrect = false;
-  };
+  // TODO: DEPRECATED
+  // $scope.resetPredictionSearch = () => {
+  //   $scope.songToPredict = '';
+  //   $scope.songToPredictSearchResult = false;
+  //   SynapticFactory.correctNetwork(songToPredictFeatures, Math.round($scope.songPredictionResult));
+  //   $scope.correct = false;
+  //   $scope.incorrect = false;
+  // };
 
   let songToPredictFeatures;
 
@@ -64,12 +65,13 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
     $scope.showHowToFix = true;
   };
 
-  $scope.correctNetwork = () => {
-    SynapticFactory.correctNetwork(songToPredictFeatures, $scope.correctResponse);
-    $scope.showHowToFix = false;
-    $scope.correct = false;
-    $scope.incorrect = false;
-  };
+  // TODO: DEPRECATED
+  // $scope.correctNetwork = () => {
+  //   SynapticFactory.correctNetwork(songToPredictFeatures, $scope.correctResponse);
+  //   $scope.showHowToFix = false;
+  //   $scope.correct = false;
+  //   $scope.incorrect = false;
+  // };
 
   $scope.showHowToFix = false;
 
