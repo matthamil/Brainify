@@ -5,11 +5,13 @@ const firebase = require('firebase');
 function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
   let _currentUser;
 
+  /**
+   * Gets the cached user object. This object needs to be loaded
+   * from Firebase prior to caching.
+   * @returns {Object}
+   *     Current user object from Firebase
+   */
   function getCurrentUser() {
-    if (!_currentUser) {
-      console.error('No current user!');
-      return null;
-    } else {
       // Return the object nested in the unique Firebase key
       let key = Object.keys(_currentUser)[0];
       return _currentUser[key];
@@ -22,9 +24,12 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
 
   /**
    * Creates a user object to be stored in Firebase
-   * @param  {Object} spotifyUser  from Spotify
-   * @param  {Object} firebaseUser from Firebase
-   * @return {Object} Object containing properties from both user objects
+   * @param  {Object} spotifyUser
+   *     Spotify user object
+   * @param  {Object} firebaseUser
+   *     Firebase user object
+   * @return {Object}
+   *     Object with properties from both user objects to be stored in Firebase.
    */
   function buildUserObject(spotifyUser, firebaseUser) {
     return {
@@ -40,16 +45,17 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
 
   /**
    * Checks if a user is authenticated through Firebase
-   * @return {Boolean} If user is authenticated
+   * @return {Boolean}
+   *     If user is authenticated
    */
   function getCurrentFirebaseUser() {
     return AuthFactory.isAuthenticated() ? firebase.auth().currentUser : null;
   }
 
   /**
-   * Saves the current user's settings to Firebase
-   * @param userObj current user
-   * @returns {Promise} Resolves to Firebase key
+   * Saves the new user's settings to Firebase
+   * @returns {Promise}
+   *     Resolves to Firebase key from user in Firebase
    */
   function saveNewUser() {
     return Spotify.getCurrentUser()
@@ -79,8 +85,10 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
 
   /**
    * Returns user object from Firebase
-   * @param  {String} uid Firebase uid
-   * @return {Promise} Resolves to user if found
+   * @param  {String} uid
+   *     Firebase uid
+   * @return {Promise}
+   *     Resolves to user if found, otherwise rejected
    */
   function getUserFromFirebase(uid) {
     return $q((resolve, reject) => {
@@ -102,8 +110,10 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
 
   /**
    * Modifies a user's settings in Firebase
-   * @param  {Object} modifiedUserObj Properties to change
-   * @return {Promise} user
+   * @param  {Object} modifiedUserObj
+   *     Object with properties to change in Firebase
+   * @return {Promise}
+   *     User object from Firebase
    */
   function modifyExistingUser(modifiedUserObj) {
     return $q((resolve, reject) => {
@@ -121,7 +131,8 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
 
   /**
    * Returns an existing user or creates and returns new one
-   * @return {Promise} Resolves to user object
+   * @return {Promise}
+   *     Resolves to user object
    */
   function checkIfUserExistsOnLogin() {
     let user = getCurrentFirebaseUser();
