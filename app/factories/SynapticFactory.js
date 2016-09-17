@@ -39,6 +39,43 @@ function SynapticFactory($q, Spotify) {
     });
   }
 
+  let _allOtherNetworks;
+
+  function cacheAllOtherNetworks(networksArray) {
+    _allOtherNetworks = networksArray;
+  }
+
+  function convertFromJsonNetwork(networkObj) {
+    networkObj.jsonNetwork = syn.Network.fromJSON(networkObj.jsonNetwork);
+  }
+
+  function makePredictionAllOtherNetworks(songFeaturesArray, songId) {
+    debugger;
+    console.log('songFeaturesArray:', songFeaturesArray);
+    if (!_allOtherNetworks) {
+      throw Error (`Failed to make predictions on all networks! All other networks are ${_allOtherNetworks}!`);
+    }
+    let resultsArray = _allOtherNetworks.map((networkObj) => {
+      // If the song is in the positive training data set
+      if (networkObj.trainingData.positive_ids.indexOf(songId) >= 0) {
+        console.log(`Found song in positive training data cache of ${networkObj.name}`);
+      }
+      // If the song is in the negative training data set
+      else if (networkObj.trainingData.negative_ids.indexOf(songId) >= 0) {
+        console.log(`Found song in positive training data cache of ${networkObj.name}`);
+      }
+      else {
+        debugger;
+        return {
+          result: networkObj.jsonNetwork.activate(songFeaturesArray[0])[0],
+          name: networkObj.name,
+          id: networkObj.playlistId
+        };
+      }
+    });
+    return resultsArray;
+  }
+
   function setNetwork(network) {
     if (!network || Object.keys(network).length === 0) { return; }
     console.log('network inside setNetwork:', network);
@@ -224,7 +261,10 @@ function SynapticFactory($q, Spotify) {
   return {
     trainNetwork,
     makePrediction,
+    makePredictionAllOtherNetworks,
     myNetwork,
+    convertFromJsonNetwork,
+    cacheAllOtherNetworks,
     buildNetwork,
     getNetwork,
     getNetworkFirebaseObj,

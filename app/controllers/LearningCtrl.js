@@ -87,6 +87,7 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
       .then((featuresVector) => {
         $scope.predictedSongFeatures = featuresVector[0];
         $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector, $scope.songToPredictSearchResult.id)[0];
+        $scope.allOtherNetworkPredictions = SynapticFactory.makePredictionAllOtherNetworks(featuresVector, $scope.songToPredictSearchResult.id);
         $scope.didPredict = true;
         console.log('Prediction:', $scope.songPredictionResult);
         if (Math.round($scope.songPredictionResult)) {
