@@ -4,6 +4,7 @@ bower_components
 node_modules
 coverage
 app/SpotifyConfig.js
+app/SpotifyKeys.js
 app/FirebaseConfig.js
 dist/app.bundle.js
 dist/vendor.bundle.js
