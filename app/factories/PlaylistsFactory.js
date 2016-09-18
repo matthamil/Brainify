@@ -74,6 +74,11 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     return Spotify.getCurrentUser()
       .then((currentUser) => {
         console.log('Logged in user: ', currentUser);
+        // If no display image
+        if (currentUser.images.length === 0) {
+          currentUser.images.push({url: 'https://i.imgur.com/UO5zWtC.png'});
+          currentUser.display_name = currentUser.id;
+        }
         // Cache the current user
         user = currentUser;
       })
@@ -561,7 +566,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     modifyNetwork,
     resetAndUpdateNetwork,
     saveNetwork,
-    setSelectedPlaylist,
+    setSelectedPlaylist
   };
 }
 

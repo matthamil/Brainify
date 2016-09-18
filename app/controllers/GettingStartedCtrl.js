@@ -7,7 +7,7 @@ function GettingStartedController($scope, $location, PlaylistsFactory, UserSetti
   /**
    * Loads the current user and the user's playlists
    */
-  $scope.loadUserInfo = () => {
+   $scope.loadUserInfo = () => {
     UserSettingsFactory.checkIfUserExistsOnLogin()
       .then((user) => {
         console.log('User in loadUserInfo in GettingStartedCtrl', user);

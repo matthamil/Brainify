@@ -59,6 +59,11 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
   function saveNewUser() {
     return Spotify.getCurrentUser()
       .then((spotifyUser) => {
+        // If no display image
+        if (spotifyUser.images.length === 0) {
+          spotifyUser.images.push({url: 'https://i.imgur.com/UO5zWtC.png'});
+          spotifyUser.display_name = spotifyUser.id;
+        }
         let userObj = buildUserObject(spotifyUser, getCurrentFirebaseUser());
         return $q.resolve(userObj);
       })
