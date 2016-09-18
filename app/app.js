@@ -13,8 +13,6 @@ const MODULE_NAME = 'Brainify';
 
 let app = angular.module(MODULE_NAME, ['ngRoute', 'angularSpinner', 'spotify']);
 
-// Loading Providers
-require('./providers');
 // Loading Controllers
 require('./controllers');
 // Loading Factories

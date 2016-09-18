@@ -1,6 +1,6 @@
 'use strict';
 
-function SpotifyLoginController($scope, $interval, $location, Spotify, AuthTokenRefresh) {
+function SpotifyLoginController($scope, $interval, $location, Spotify) {
   /**
    * Creates a popup window for a user to login and saves the auth token to local storage.
    * This function relies on app/SpotifyConfig.js which is not included in the project repo.
@@ -9,15 +9,13 @@ function SpotifyLoginController($scope, $interval, $location, Spotify, AuthToken
   $scope.login = () => {
     Spotify.login()
       .then((data) => {
-        AuthTokenRefresh.setAuthToken(data);
-        console.log(AuthTokenRefresh.isAuth());
-
+        // Refresh Spotify auth every 3 minutes
         $interval(function() {
-          return Spotify.login()
-            .then((data) => {
-              console.log(data);
-            });
-        }, 10000);
+          console.log('Refreshing Spotify token!');
+          localStorage.removeItem('spotify-token');
+          Spotify.login();
+        }, (3 * 60 * 1000)); //3 * 60 * 1000
+
         // Reroute the user once logged in
         $location.url('/getting-started');
       })
