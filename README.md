@@ -6,6 +6,12 @@ Brainify creates smart Spotify playlists using machine learning techniques.
 
 ![Brainify Logged in Mockup](https://i.imgur.com/l5dN5g6.jpg)
 
+![Playlist Page](https://i.imgur.com/5Imrwu8.png)
+
+![After a Search](https://i.imgur.com/JZaYwAQ.png)
+
+![After user judges Brainify's decision](https://i.imgur.com/VKngrbJ.png)
+
 ## Getting Started
 
 Download or clone the project to your machine. You will need a [Spotify API key](https://developer.spotify.com/my-applications/#!/applications) to run the project locally.
