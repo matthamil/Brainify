@@ -112,6 +112,25 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
     });
   }
 
+
+  function getAllOtherUsersFromFirebase() {
+    return $q((resolve, reject) => {
+      $http.get('https://brainify-ddc05.firebaseio.com/users.json')
+        .success((usersObj) => {
+          const keys = Object.keys(usersObj);
+          const users = keys.map((key) => usersObj[key]);
+          const allUsersExceptCurrentUser = users.filter((user) => {
+            return user.display_name !== getCurrentUser().display_name;
+          });
+          resolve(allUsersExceptCurrentUser);
+        })
+        .error((error) => {
+          console.error('Error loading all other users from Firebase:', error);
+          reject(error);
+        });
+    });
+  }
+
   /**
    * Modifies a user's settings in Firebase
    * @param  {Object} modifiedUserObj
@@ -150,6 +169,7 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
   return {
     checkIfUserExistsOnLogin,
     modifyExistingUser,
+    getAllOtherUsersFromFirebase,
     getCurrentUser,
     setCurrentUser
   };

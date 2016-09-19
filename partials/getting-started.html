@@ -2,6 +2,8 @@
 
 <div id="getting-started-wrapper" ng-init="loadUserInfo()" ng-show="!showSpinner">
   <nav>
+    <input type="text" style="float:left; margin-top: 3.5vh; margin-left: 30vw; border-radius: 25px; padding: 5px 20px; border:none; font-size: 0.75em" placeholder="Search for a user" ng-model="searchedUser">
+    <button type="button" style="float:left; margin-top: 3.25vh; margin-left: 10px" ng-click="searchUser()" class="btn btn-default">Search</button>
     <div class="current-user" ng-click="changeViewToUserSettings();">
       <a>
         <ul>
@@ -20,15 +22,32 @@
       started.<br/>
     </h1>
   </div>
-  <div class="playlists-area">
-    <h3>Your Playlists:</h3>
-    <hr/>
-    <div ng-repeat="playlist in user.playlists" class="playlist" ng-click="setSelectedPlaylist(playlist.id)">
-      <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}"/>
-      <ul>
-        <li>{{playlist.name}}</li>
-      </ul>
-      <div class="clearfix"></div>
+
+  <div ng-if="!showOtherUserPlaylists">
+    <div class="playlists-area">
+      <h3>Your Playlists:</h3>
+      <hr/>
+      <div ng-repeat="playlist in user.playlists" class="playlist" ng-click="setSelectedPlaylist(playlist.id)">
+        <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}"/>
+        <ul>
+          <li>{{playlist.name}}</li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="showOtherUserPlaylists">
+    <div class="playlists-area">
+      <h3>{{otherUser.display_name}}'s Playlists:</h3>
+      <hr/>
+      <div ng-repeat="playlist in otherUser.playlists" class="playlist" ng-click="setSelectedPlaylist(playlist.id)">
+        <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}"/>
+        <ul>
+          <li>{{playlist.name}}</li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
     </div>
   </div>
 </div>

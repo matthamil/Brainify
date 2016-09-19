@@ -19,6 +19,13 @@ body {
   color: white;
 }
 
+
+input::focus {
+  outline: none !important;
+  box-shadow: none;
+  -webkit-appearance: none;
+}
+
 .clearfix {
   clear: both;
 }

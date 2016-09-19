@@ -4,16 +4,42 @@ function GettingStartedController($scope, $location, PlaylistsFactory, UserSetti
   // Boolean to control loading animation
   $scope.showSpinner = true;
 
-  /**
-   * Loads the current user and the user's playlists
-   */
-   $scope.loadUserInfo = () => {
+  $scope.searchedUser = '';
+
+  $scope.showOtherUserPlaylists = false;
+
+  $scope.searchUser = () => {
+    if ($scope.searchedUser !== '') {
+      console.log(`Searching for user: ${$scope.searchedUser}`);
+      const foundUser = $scope.allOtherUsersList.filter((user) => {
+        return $scope.searchedUser === user.display_name;
+      })[0];
+
+      if (foundUser) {
+        console.log(`Found a user with name ${$scope.searchedUser}:`, foundUser);
+        PlaylistsFactory.setOtherUser(foundUser);
+        PlaylistsFactory.getOtherUserInfo(foundUser)
+          .then((otherUser) => {
+            $scope.otherUser = otherUser;
+            $scope.showOtherUserPlaylists = true;
+          });
+      }
+      $scope.searchedUser = '';
+    }
+  };
+
+   // Loads the current user and the user's playlists
+  $scope.loadUserInfo = () => {
     UserSettingsFactory.checkIfUserExistsOnLogin()
       .then((user) => {
         console.log('User in loadUserInfo in GettingStartedCtrl', user);
         UserSettingsFactory.setCurrentUser(user);
-      });
-    PlaylistsFactory.getUserInfo()
+        return UserSettingsFactory.getAllOtherUsersFromFirebase();
+      })
+      .then((allOtherUsers) => {
+        $scope.allOtherUsersList = allOtherUsers;
+        return PlaylistsFactory.getUserInfo();
+      })
       .then((user) => {
         $scope.user = user;
         // Disble the loading animation
@@ -28,13 +54,12 @@ function GettingStartedController($scope, $location, PlaylistsFactory, UserSetti
 
   $scope.setSelectedPlaylist = (playlistId) => {
     PlaylistsFactory.setSelectedPlaylist(playlistId);
-    // PlaylistsFactory.getAudioFeaturesForPlaylist(PlaylistsFactory.getSelectedPlaylist())
-      // .then((data) => {
+    // Reroute
     $location.url('/test');
-      // });
   };
 
   $scope.changeViewToUserSettings = () => {
+    // Reroute
     $location.url('/settings');
   }
 }

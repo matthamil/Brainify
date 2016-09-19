@@ -5,8 +5,11 @@ const firebase = require('firebase');
 function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) {
   // Stores the user object upon login
   let user;
+  // Stores a searched user
+  let otherUser;
 
   const getSpotifyUser = () => user;
+  const setOtherUser = (user) => { otherUser = user; };
 
   // Stores the user's selected playlist. Used to train a neural network.
   let playlist;
@@ -114,6 +117,43 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
       });
   }
 
+  function getOtherUserInfo(userObj) {
+    return Spotify.getUserPlaylists(otherUser.spotifyId)
+      .then((playlistsObj) => {
+        console.log(`Found playlists for user ${otherUser.display_name}:`, playlistsObj.items);
+        otherUser.playlists = playlistsObj.items;
+        console.log(`${otherUser.display_name} object:`, otherUser);
+      })
+      .catch((error) => {
+        // If the user has no playlists
+        return $q.reject(new Error('No playlists found.'));
+      })
+      .then(() => {
+        return getAllNetworksForOtherUser(otherUser.uid);
+      })
+      .then((networksObj) => {
+        if (Object.keys(networksObj).length === 0) {
+          console.error(`Error! ${otherUser.display_name} doesn't have any playlists uploaded!`);
+          return $q.reject(networksObj);
+        }
+        const keys = Object.keys(networksObj);
+        const networks = keys.map((key) => networksObj[key]);
+        return $q.resolve(networks);
+      })
+      .then((networksArray) => {
+        otherUser.playlists = otherUser.playlists.reduce((foundList, playlist) => {
+          for (let i = 0; i < networksArray.length; i++) {
+            if (playlist.id === networksArray[i].playlistId) {
+              foundList.push(playlist);
+            }
+          }
+          return foundList;
+        }, []);
+
+        return $q.resolve(otherUser);
+      });
+  }
+
   // Used to cache the selected playlist
   function setSelectedPlaylist(playlistId) {
     // Prevent the playlist from being redefined if it is already
@@ -124,8 +164,16 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
       }
     }
 
+    let selectedUser;
+
+    if (otherUser) {
+      selectedUser = otherUser;
+    } else {
+      selectedUser = user;
+    }
+
     // Locate the correct playlist by id
-    playlist = user.playlists.filter((playlist) => {
+    playlist = selectedUser.playlists.filter((playlist) => {
       return playlist.id === playlistId;
     })[0];
 
@@ -524,6 +572,20 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
       });
   }
 
+  function getAllNetworksForOtherUser(fbKey) {
+    return $q((resolve, reject) => {
+      $http.get(`https://brainify-ddc05.firebaseio.com/networks.json?orderBy="uid"&equalTo="${fbKey}"`)
+        .success((response) => {
+          console.log(`Found all networks in Firebase with Firebase uid ${fbKey}:`, response);
+          resolve(response);
+        })
+        .error((error) => {
+          console.error('Failed to get networks from Firebase:', error);
+          reject(error);
+        });
+    });
+  }
+
   /**
    * Loads and caches all networks from Firebase for the current user and return all networks
    * except the network that is for the currently selected playlist
@@ -558,6 +620,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     collectSongDataForNeuralNetwork,
     getAudioFeaturesForPlaylist,
     getAudioFeaturesForSongIds,
+    getOtherUserInfo,
     getNetwork,
     getSelectedPlaylist,
     getSpotifyUser,
@@ -566,6 +629,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     modifyNetwork,
     resetAndUpdateNetwork,
     saveNetwork,
+    setOtherUser,
     setSelectedPlaylist
   };
 }
