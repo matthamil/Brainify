@@ -10,6 +10,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
 
   const getSpotifyUser = () => user;
   const setOtherUser = (user) => { otherUser = user; };
+  const getOtherUser = () => otherUser;
 
   // Stores the user's selected playlist. Used to train a neural network.
   let playlist;
@@ -121,8 +122,23 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     return Spotify.getUserPlaylists(otherUser.spotifyId)
       .then((playlistsObj) => {
         console.log(`Found playlists for user ${otherUser.display_name}:`, playlistsObj.items);
+        // Save the users playlists
         otherUser.playlists = playlistsObj.items;
-        console.log(`${otherUser.display_name} object:`, otherUser);
+
+        // Find the songs in each playlist
+        return $q.all(
+          otherUser.playlists.map((playlist) => {
+            return Spotify.getPlaylistTracks(playlist.owner.id, playlist.id);
+          })
+        );
+      })
+      .then((playlistsArray) => {
+        // Save the songs in each playlist
+        playlistsArray.forEach((playlist, index) => {
+          otherUser.playlists[index].songList = playlist;
+        });
+        // Returning the cached user object
+        return $q.resolve(otherUser);
       })
       .catch((error) => {
         // If the user has no playlists
@@ -620,6 +636,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
     collectSongDataForNeuralNetwork,
     getAudioFeaturesForPlaylist,
     getAudioFeaturesForSongIds,
+    getOtherUser,
     getOtherUserInfo,
     getNetwork,
     getSelectedPlaylist,

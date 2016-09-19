@@ -20,9 +20,11 @@
   <div>
     <h1 style="color:white">Score: {{songPredictionResult}}</h1>
 
-    <button type="button" class="btn btn-success" ng-click="correctGuess()">Correct</button>
-    <button type="button" class="btn btn-danger" ng-click="wrongGuess()">Wrong</button>
-    <button type="button" class="btn btn-danger" ng-click="hardReset()">Reset</button>
+    <div ng-show="!otherUser">
+      <button type="button" class="btn btn-success" ng-click="correctGuess()">Correct</button>
+      <button type="button" class="btn btn-danger" ng-click="wrongGuess()">Wrong</button>
+      <button type="button" class="btn btn-danger" ng-click="hardReset()">Reset</button>
+    </div>
 
     <div ng-show="clickedCorrectOrWrong">
       <button type="button" class="btn btn-success" ng-click="saveToPlaylist()">Save to Playlist</button>

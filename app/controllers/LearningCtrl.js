@@ -5,6 +5,7 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
   $scope.playlist = PlaylistsFactory.getSelectedPlaylist();
 
   const user = PlaylistsFactory.getSpotifyUser();
+  $scope.otherUser = PlaylistsFactory.getOtherUser();
 
   $scope.test = () => {
     console.log('Playlist:', $scope.playlist);
@@ -50,28 +51,11 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
 
   $scope.songToPredict = '';
 
-  // TODO: DEPRECATED
-  // $scope.resetPredictionSearch = () => {
-  //   $scope.songToPredict = '';
-  //   $scope.songToPredictSearchResult = false;
-  //   SynapticFactory.correctNetwork(songToPredictFeatures, Math.round($scope.songPredictionResult));
-  //   $scope.correct = false;
-  //   $scope.incorrect = false;
-  // };
-
   let songToPredictFeatures;
 
   $scope.networkGuessedWrong = () => {
     $scope.showHowToFix = true;
   };
-
-  // TODO: DEPRECATED
-  // $scope.correctNetwork = () => {
-  //   SynapticFactory.correctNetwork(songToPredictFeatures, $scope.correctResponse);
-  //   $scope.showHowToFix = false;
-  //   $scope.correct = false;
-  //   $scope.incorrect = false;
-  // };
 
   $scope.showHowToFix = false;
 
