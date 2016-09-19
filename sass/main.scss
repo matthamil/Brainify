@@ -1,6 +1,7 @@
 @import 'reset';
 @import 'theme-colors';
 @import 'getting-started';
+@import '../node_modules/angular-ui-bootstrap/src/position/position.scss';
 
 @mixin centerer {
   position: absolute;

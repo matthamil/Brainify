@@ -9,7 +9,8 @@
     "server": "webpack-dev-server --history-api-fallback --inline --progress",
     "test": "karma start",
     "test-watch": "karma start --auto-watch --no-single-run",
-    "start": "npm run server"
+    "start": "npm run server",
+    "build-css": "node-sass --include-path scss sass/main.scss css/main.css"
   },
   "author": "",
   "license": "ISC",
@@ -37,11 +38,13 @@
     "karma-spec-reporter": "0.0.26",
     "karma-webpack": "^1.7.0",
     "node-libs-browser": "^1.0.0",
+    "node-sass": "^3.10.0",
     "null-loader": "^0.1.1",
     "phantomjs-prebuilt": "^2.1.4",
     "postcss-loader": "^0.9.1",
     "raw-loader": "^0.5.1",
     "rimraf": "^2.5.1",
+    "sass-loader": "^4.0.2",
     "style-loader": "^0.13.0",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.14.1"

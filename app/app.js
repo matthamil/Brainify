@@ -4,14 +4,17 @@ let angular = require('angular');
 
 // Dependencies for Angular app
 require('angular-route');
+require('angular-sanitize');
 require('angular-spinner');
 require('angular-spotify');
+require('angular-ui-bootstrap');
+import modal from 'angular-ui-bootstrap/src/modal/index-nocss.js'
 const firebase = require('firebase');
 
 // Main Angular module
 const MODULE_NAME = 'Brainify';
 
-let app = angular.module(MODULE_NAME, ['ngRoute', 'angularSpinner', 'spotify']);
+let app = angular.module(MODULE_NAME, ['ngRoute', 'ngSanitize', 'ui.bootstrap', modal, 'angularSpinner', 'spotify']);
 
 // Loading Controllers
 require('./controllers');
