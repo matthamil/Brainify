@@ -1,17 +1,52 @@
 'use strict';
 
+const firebase = require('firebase');
+
 function MessagingFactory($q, $http, UserSettingsFactory) {
-  function addMessageToChain(messageObj) {
-    return findConversationId(messageObj.users)
-      .then((conversationId) => {
-        return $q((resolve, reject) => {
-          $http.post(`https://brainify-ddc05.firebaseio.com/conversations/${conversationId}/messages.json`, angular.toJson(messageObj.messages))
+  let _selectedConversation;
+
+  function setSelectedConversation(conversation) {
+    _selectedConversation = conversation;
+  }
+
+  function getSelectedConversation() {
+    return _selectedConversation;
+  }
+
+  function getConversationById(conversationId) {
+    return $q((resolve, reject) => {
+          $http.get(`https://brainify-ddc05.firebaseio.com/conversations/${conversationId}.json`)
             .success((response) => {
-              console.log('Success! Added new message to chain:', response);
+              console.log('Success! Found message chain:', response);
               resolve(response);
             })
             .error((error) => {
-              console.error('Failed to add new message to chain:', error);
+              console.error('Failed to find message chain:', error);
+              reject(error);
+            });
+        });
+  }
+
+  function addMessageToChain(messageObj) {
+    return findConversationId(messageObj.users)
+      .then((conversationId) => {
+        return getConversationById(conversationId);
+      })
+      .then((conversationObj) => {
+        console.log('Here ya go:', conversationObj);
+        messageObj.messages.forEach((message) => {
+          conversationObj.messages.push(message);
+        });
+        console.log('Added messages:', conversationObj);
+
+        return $q((resolve, reject) => {
+          $http.patch(`https://brainify-ddc05.firebaseio.com/conversations/${conversationObj.fbKey}.json`, angular.toJson(conversationObj))
+            .success((response) => {
+              console.log(`Success! Patched the new message into the existing conversation with id ${conversationObj.fbKey}:`, response);
+              resolve(response);
+            })
+            .error((error) => {
+              console.error(`Failed to patch the new message into the existing conversation with id ${conversationObj.fbKey}:`, error);
               reject(error);
             });
         });
@@ -130,10 +165,65 @@ function MessagingFactory($q, $http, UserSettingsFactory) {
     });
   }
 
+  function getConversationsForUser(uid) {
+    let userConversations;
+    return UserSettingsFactory.getUserFromFirebase(uid)
+      .then((userObj) => {
+        const key = Object.keys(userObj)[0];
+        const conversationIds = userObj[key].message_chains;
+        return $q.all(
+          conversationIds.map(id => getConversationById(id))
+        );
+      })
+      .then((conversations) => {
+        userConversations = conversations;
+        console.log('conversations:', conversations);
+
+        // Find the uids of the other users in the current users conversations
+        const otherUserUids = conversations.map((conversation) => {
+          return conversation.users.filter((uid) => {
+            return uid !== firebase.auth().currentUser.uid;
+          })[0];
+        });
+
+        console.log(otherUserUids);
+        // Find the other user's display name
+        return $q.all(
+          otherUserUids.map(uid => UserSettingsFactory.getUserFromFirebase(uid))
+        );
+      })
+      .then((otherUsersObj) => {
+        console.log(otherUsersObj);
+        const keys = Object.keys(otherUsersObj);
+        const otherUsers = keys.map(key => otherUsersObj[key]);
+
+        // Adding a property on each conversation with information about the other user
+        userConversations.forEach((conversation) => {
+          const otherUserUid = otherUsers.filter((user) => {
+            return conversation.users.indexOf(user.uid) != -1;
+          })[0];
+
+          const otherUserObj = otherUsers.filter((user) => {
+            return user.uid === otherUserUid;
+          })[0];
+
+          const otherUserKey = Object.keys(otherUserObj)[0];
+          conversation.otherUser = otherUserObj[otherUserKey];
+        });
+
+        console.log(userConversations);
+
+        return $q.resolve(userConversations);
+      });
+  }
+
   return {
     addMessageToChain,
     deleteConversation,
+    getConversationsForUser,
+    getSelectedConversation,
     modifyMessage,
+    setSelectedConversation,
     startConversationChain
   }
 }

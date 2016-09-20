@@ -14,7 +14,9 @@ function SendMessageController($scope, $sce, $uibModalInstance, otherUser, song,
     songid: song.id,
     read: false,
     network_score: score,
-    author: firebase.auth().currentUser.uid,
+    author_id: firebase.auth().currentUser.uid,
+    author_name: UserSettingsFactory.getCurrentUser().display_name,
+    author_image: UserSettingsFactory.getCurrentUser().image,
     text: '',
   }
 

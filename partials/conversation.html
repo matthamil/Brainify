@@ -1,0 +1,20 @@
+<h1>Conversation with {{conversation.otherUser.display_name}}</h1>
+<img ng-src="{{conversation.otherUser.image}}" style="max-width: 50px; max-height: 50px; border-radius: 50%;">
+<div class="container">
+  <div ng-repeat="message in conversation.messages">
+    <div ng-if="message.author_id === currentUserUid" class="row">
+      <p style="color:white" class="col-xs-10">{{message.text}}</p>
+      <img ng-src="{{message.author_image}}" style="border-radius: 50%;" class="col-xs-2 img-responsive">
+    </div>
+    <div ng-if="message.author_id !== currentUserUid" class="row">
+      <img ng-src="{{message.author_image}}" style="border-radius: 50%;" class="col-xs-2 img-responsive">
+      <p style="color:white" class="col-xs-10">{{message.text}}</p>
+    </div>
+  </div>
+  <div class="form-inline">
+    <div class="form-group">
+      <input class="form-control" placeholder="Send a message" ng-model="newMessage" ng-keypress="sendNewMessage($event)">
+      <button type="button" class="btn btn-default" ng-click="sendNewMessage()">Send</button>
+    </div>
+  </div>
+</div>

@@ -20,8 +20,17 @@ function AppRoutes($routeProvider) {
       templateUrl: 'partials/messages.html',
       controller: 'ViewMessagesCtrl',
       resolve: {
-        messages: function(MessagingFactory) {
-          return MessagingFactory.getMessagesForUser(firebase.auth().currentUser.uid);
+        conversations: function(MessagingFactory) {
+          return MessagingFactory.getConversationsForUser(firebase.auth().currentUser.uid);
+        }
+      }
+    })
+    .when('/messages/:conversationId', {
+      templateUrl: 'partials/conversation.html',
+      controller: 'ViewConversationCtrl',
+      resolve: {
+        conversation: function(MessagingFactory) {
+          return MessagingFactory.getSelectedConversation();
         }
       }
     })
