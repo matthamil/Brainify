@@ -1,0 +1,6 @@
+<div ng-repeat="conversation in conversations">
+  <div ng-click="goToConversation(conversation)">
+    <h1>Conversation with {{conversation.otherUser.display_name}}</h1>
+    <img ng-src="{{conversation.otherUser.image}}">
+  </div>
+</div>

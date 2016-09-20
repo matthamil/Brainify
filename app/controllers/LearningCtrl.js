@@ -1,6 +1,6 @@
 'use strict';
 
-function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spotify, FirebaseFactory) {
+function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFactory, Spotify, FirebaseFactory) {
 
   $scope.playlist = PlaylistsFactory.getSelectedPlaylist();
 
@@ -127,7 +127,7 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
 
   $scope.hardReset = () => {
     PlaylistsFactory.resetAndUpdateNetwork();
-  }
+  };
 
   $scope.saveToPlaylist = () => {
     $scope.clickedCorrectOrWrong = false;
@@ -137,7 +137,23 @@ function LearningController($scope, $q, SynapticFactory, PlaylistsFactory, Spoti
         console.info(`Saved song to playlist ${$scope.playlist.id}`)
         $scope.lastSearchResult = undefined;
       });
-  }
+  };
+
+  $scope.open = () => {
+     let modalInstance = $uibModal.open({
+      templateUrl: '../partials/SendMessage.html',
+      controller: 'SendMessageCtrl',
+      resolve: {
+        otherUser: $scope.otherUser,
+        song: $scope.lastSearchResult,
+        score: $scope.songPredictionResult,
+        playlist: $scope.playlist,
+        user: function (UserSettingsFactory) {
+          return UserSettingsFactory.getCurrentUser();
+        }
+      }
+    });
+  };
 }
 
 module.exports = LearningController;

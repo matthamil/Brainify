@@ -1,6 +1,6 @@
 'use strict';
 
-function GettingStartedController($scope, $location, PlaylistsFactory, UserSettingsFactory, Spotify) {
+function GettingStartedController($scope, $location, $route, PlaylistsFactory, UserSettingsFactory, Spotify) {
   // Boolean to control loading animation
   $scope.showSpinner = true;
 
@@ -58,9 +58,9 @@ function GettingStartedController($scope, $location, PlaylistsFactory, UserSetti
     $location.url('/test');
   };
 
-  $scope.changeViewToUserSettings = () => {
+  $scope.goToGettingStarted = () => {
     // Reroute
-    $location.url('/settings');
+    $route.reload();
   }
 }
 

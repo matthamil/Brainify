@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <h3 class="modal-title">Send {{otherUser.display_name}} a Message</h3>
+</div>
+
+<div class="modal-body">
+  <!-- <img ng-src="{{song.album.images[0].url}}" class="img-responsive"> -->
+  <h1>{{song.name}}</h1>
+  <h2>{{song.artists[0].name}}</h2>
+
+  <!-- <iframe ng-src="{{trustSrc('https://embed.spotify.com/?uri=' + song.uri)}}" width="250" height="330" frameborder="0" allowtransparency="true"></iframe><br/> -->
+
+  <audio controls style="display:block">
+    <source ng-src="{{trustSrc(song.preview_url)}}" type="audio/mpeg">
+    Your browser does not support the audio tag.
+  </audio>
+
+  <label for="message">Message:</label>
+  <textarea type="text" class="form-control" name="message" ng-model="messageContent.text"/>
+
+  <label for="score">Score:</label>
+  <input disabled type="text" class="form-control" ng-value="{{score}}"/>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-danger" ng-click="close()">Close</button>
+  <button class="btn btn-success" ng-click="send()">Send</button>
+</div>
