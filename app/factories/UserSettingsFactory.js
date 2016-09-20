@@ -38,7 +38,7 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
       link_to_spotify: spotifyUser.external_urls.spotify,
       image: spotifyUser.images[0].url,
       uid: firebaseUser.uid,
-      fbKey: ''
+      fbKey: '',
     };
   }
 
@@ -171,7 +171,8 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
     modifyExistingUser,
     getAllOtherUsersFromFirebase,
     getCurrentUser,
-    setCurrentUser
+    setCurrentUser,
+    getUserFromFirebase
   };
 }
 

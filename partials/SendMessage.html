@@ -14,11 +14,8 @@
     Your browser does not support the audio tag.
   </audio>
 
-  <label for="title">Title:</label>
-  <input type="text" class="form-control" name="title" ng-model="message.title"/>
-
   <label for="message">Message:</label>
-  <textarea type="text" class="form-control" name="message" ng-model="message.text"/>
+  <textarea type="text" class="form-control" name="message" ng-model="messageContent.text"/>
 
   <label for="score">Score:</label>
   <input disabled type="text" class="form-control" ng-value="{{score}}"/>

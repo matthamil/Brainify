@@ -1,5 +1,7 @@
 'use strict';
 
+const firebase = require('firebase');
+
 function AppRoutes($routeProvider) {
   $routeProvider
     .when('/', {
@@ -14,15 +16,24 @@ function AppRoutes($routeProvider) {
       templateUrl: 'partials/getting-started.html',
       controller: 'GettingStartedCtrl',
     })
-    .when('/settings', {
-      templateUrl: 'partials/user-settings.html',
-      controller: 'UserSettingsCtrl',
+    .when('/messages', {
+      templateUrl: 'partials/messages.html',
+      controller: 'ViewMessagesCtrl',
       resolve: {
-        user: function (UserSettingsFactory) {
-          return UserSettingsFactory.getCurrentUser();
+        messages: function(MessagingFactory) {
+          return MessagingFactory.getMessagesForUser(firebase.auth().currentUser.uid);
         }
       }
     })
+    // .when('/settings', {
+    //   templateUrl: 'partials/user-settings.html',
+    //   controller: 'UserSettingsCtrl',
+    //   resolve: {
+    //     user: function (UserSettingsFactory) {
+    //       return UserSettingsFactory.getCurrentUser();
+    //     }
+    //   }
+    // })
     .when('/test', {
       templateUrl: 'partials/learning-test.html',
       controller: 'LearningCtrl',

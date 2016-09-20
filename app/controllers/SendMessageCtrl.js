@@ -1,33 +1,28 @@
 'use strict';
 
 const firebase = require('firebase');
+const moment = require('moment');
 
-function SendMessageController($scope, $sce, $uibModalInstance, otherUser, song, playlist, score, user, PlaylistsFactory, MessagingFactory) {
+function SendMessageController($scope, $sce, $uibModalInstance, otherUser, song, playlist, score, user, PlaylistsFactory, MessagingFactory, UserSettingsFactory) {
   $scope.otherUser = otherUser;
 
   $scope.song = song;
   $scope.score = score;
 
-  $scope.message = {
-    text: '',
-    title: `${$scope.song.name} by ${$scope.song.artists[0].name}`,
-    from: firebase.auth().currentUser.uid,
-    from_name: user.display_name,
-    from_image: user.image,
-    to: PlaylistsFactory.getOtherUser().uid,
-    to_name: PlaylistsFactory.getOtherUser().display_name,
-    to_image: PlaylistsFactory.getOtherUser().image,
-    network_score: score,
+  $scope.messageContent = {
+    date: '',
+    songid: song.id,
     read: false,
-    date: new Date(),
-    songid: song.id
-  };
+    network_score: score,
+    author: firebase.auth().currentUser.uid,
+    text: '',
+  }
 
   function setPredefinedMessage() {
     if (Math.round(score)) {
-      $scope.message.text = `I think ${song.name} by ${song.artists[0].name} would be a great addition to your ${playlist.name} playlist!`;
+      $scope.messageContent.text = `I think ${song.name} by ${song.artists[0].name} would be a great addition to your ${playlist.name} playlist!`;
     } else {
-      $scope.message.text = `Even though Brainify gave this song a ${score.toFixed(2)}, I think ${song.name} by ${song.artists[0].name} would be a great addition to your ${playlist.name} playlist!`;
+      $scope.messageContent.text = `Even though Brainify gave this song a ${score.toFixed(2)}, I think ${song.name} by ${song.artists[0].name} would be a great addition to your ${playlist.name} playlist!`;
     }
   }
 
@@ -38,16 +33,24 @@ function SendMessageController($scope, $sce, $uibModalInstance, otherUser, song,
   };
 
   $scope.send = () => {
-    console.log('Sending your message!', $scope.message);
+    $scope.messageContent.date = moment().format('MMMM Do YYYY, h:mm a');
+    const message = {
+      users: [
+        $scope.otherUser.uid,
+        firebase.auth().currentUser.uid
+      ],
+      messages: [$scope.messageContent]
+    };
+    console.log('Sending your message!', message);
     console.log(song);
-    MessagingFactory.sendMessage($scope.message);
+    MessagingFactory.startConversationChain(message);
     $uibModalInstance.close();
-    $scope.message = {};
+    $scope.messageContent = {};
   };
 
   $scope.close = () => {
     $uibModalInstance.close();
-    $scope.message = {};
+    $scope.messageContent = {}
   };
 }
 
