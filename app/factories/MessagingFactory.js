@@ -2,32 +2,53 @@
 
 function MessagingFactory($q, $http, UserSettingsFactory) {
   function addMessageToChain(messageObj) {
-    const conversationId = findConversationId(messageObj.to, messageObj.from);
-    return $q((resolve, reject) => {
-      $http.post(`https://brainify-ddc05.firebaseio.com/conversations/${conversationId}/messages.json`, angular.toJson(messageObj.messages))
-        .success((response) => {
-          console.log('Success! Added new message to chain:', response);
-          resolve(response);
-        })
-        .error((error) => {
-          console.error('Failed to add new message to chain:', error);
-          reject(error);
+    return findConversationId(messageObj.users)
+      .then((conversationId) => {
+        return $q((resolve, reject) => {
+          $http.post(`https://brainify-ddc05.firebaseio.com/conversations/${conversationId}/messages.json`, angular.toJson(messageObj.messages))
+            .success((response) => {
+              console.log('Success! Added new message to chain:', response);
+              resolve(response);
+            })
+            .error((error) => {
+              console.error('Failed to add new message to chain:', error);
+              reject(error);
+            });
         });
-    });
+      })
+      .catch(() => {
+        console.error('No conversation between these two users!');
+        console.log('Creating a new conversation...');
+        return startConversationChain(messageObj);
+      });
   }
 
   function deleteMessageFromChain() {
     // TODO
   }
 
-  function findConversationId(currentUser, otherUser) {
-    const conversationId = currentUser.message_chains.filter((id) => {
-      for (let i = 0; i < otherUser.message_chains.length; i++) {
-        return otherUser.message_chains[i] === id;
-      }
-    })[0];
+  function findConversationId(users) {
+    return $q.all(users.map(user => UserSettingsFactory.getUserFromFirebase(user)))
+      .then((usersArray) => {
+        const keys = usersArray.map(user => Object.keys(user));
 
-    return conversationId;
+        console.log(usersArray);
+        if (!usersArray[0][keys[0]].message_chains || !usersArray[1][keys[1]].message_chains) {
+          return $q.reject();
+        }
+
+        // Find the intersection of the two arrays
+        // Returns a conversation id that both users share
+        const conversationId = usersArray[0][keys[0]].message_chains.filter((n) => {
+          return usersArray[1][keys[1]].message_chains.indexOf(n) != -1;
+        })[0];
+
+        if (!conversationId) {
+          return $q.reject();
+        } else {
+          return $q.resolve(conversationId);
+        }
+      });
   }
 
   function startConversationChain(messageObj) {
@@ -110,6 +131,7 @@ function MessagingFactory($q, $http, UserSettingsFactory) {
   }
 
   return {
+    addMessageToChain,
     deleteConversation,
     modifyMessage,
     startConversationChain

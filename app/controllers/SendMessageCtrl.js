@@ -43,7 +43,7 @@ function SendMessageController($scope, $sce, $uibModalInstance, otherUser, song,
     };
     console.log('Sending your message!', message);
     console.log(song);
-    MessagingFactory.startConversationChain(message);
+    MessagingFactory.addMessageToChain(message); // always starts new convo
     $uibModalInstance.close();
     $scope.messageContent = {};
   };
