@@ -3,7 +3,7 @@
 const firebase = require('firebase');
 const moment = require('moment');
 
-function ViewConversationController($scope, $location, conversation, MessagingFactory, UserSettingsFactory) {
+function ViewConversationController($scope, $sce, $location, conversation, MessagingFactory, UserSettingsFactory) {
   $scope.conversation = conversation;
   $scope.otherUser = Object.assign({}, conversation.otherUser);
 
@@ -18,6 +18,10 @@ function ViewConversationController($scope, $location, conversation, MessagingFa
   });
 
   $scope.currentUserUid = firebase.auth().currentUser.uid;
+
+  $scope.trustSrc = function(src) {
+    return $sce.trustAsResourceUrl(src);
+  };
 
   $scope.sendNewMessage = (e) => {
     if (e.keyCode === 13) {

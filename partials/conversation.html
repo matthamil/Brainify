@@ -5,10 +5,18 @@
     <div ng-if="message.author_id === currentUserUid" class="row">
       <p style="color:white" class="col-xs-10">{{message.text}}</p>
       <img ng-src="{{message.author_image}}" style="border-radius: 50%;" class="col-xs-2 img-responsive">
+      <audio controls style="display:block" ng-if="message.preview_url">
+        <source ng-src="{{trustSrc(message.preview_url)}}" type="audio/mpeg">
+        Your browser does not support the audio tag.
+      </audio>
     </div>
     <div ng-if="message.author_id !== currentUserUid" class="row">
       <img ng-src="{{message.author_image}}" style="border-radius: 50%;" class="col-xs-2 img-responsive">
       <p style="color:white" class="col-xs-10">{{message.text}}</p>
+      <audio controls style="display:block" ng-if="message.preview_url">
+        <source ng-src="{{trustSrc(message.preview_url)}}" type="audio/mpeg">
+        Your browser does not support the audio tag.
+      </audio>
     </div>
   </div>
   <div class="form-inline">
