@@ -15,6 +15,12 @@ function AppRoutes($routeProvider) {
     .when('/getting-started', {
       templateUrl: 'partials/getting-started.html',
       controller: 'GettingStartedCtrl',
+      resolve: {
+        otherUser: function(PlaylistsFactory) {
+          // Reset the otherUser every time the user views this route
+          PlaylistsFactory.setOtherUser(undefined);
+        }
+      }
     })
     .when('/messages', {
       templateUrl: 'partials/messages.html',
