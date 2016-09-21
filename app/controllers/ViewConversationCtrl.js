@@ -5,13 +5,14 @@ const moment = require('moment');
 
 function ViewConversationController($scope, $location, conversation, MessagingFactory, UserSettingsFactory) {
   $scope.conversation = conversation;
+  $scope.otherUser = Object.assign({}, conversation.otherUser);
 
-  const DATABASEREF = firebase.database().ref('conversations');
+  const DATABASEREF = firebase.database().ref(`conversations/${conversation.fbKey}`);
 
   DATABASEREF.on('value', (snapshot) => {
     console.log('****** LOOK:', snapshot.val());
     const key = Object.keys(snapshot.val());
-    const convo = snapshot.val()[key];
+    const convo = snapshot.val();
     $scope.conversation = convo;
     $scope.$apply();
   });

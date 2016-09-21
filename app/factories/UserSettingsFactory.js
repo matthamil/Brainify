@@ -152,6 +152,20 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
     });
   }
 
+  function modifyExistingUserWithPut(modifiedUserObj) {
+    return $q((resolve, reject) => {
+      $http.put(`https://brainify-ddc05.firebaseio.com/users/${modifiedUserObj.fbKey}.json`, angular.toJson(modifiedUserObj))
+        .success((response) => {
+          console.info('Modified user in Firebase:', response);
+          resolve(response);
+        })
+        .error((error) => {
+          console.error('Error modifying user in Firebase:', error);
+          reject(error);
+        });
+    });
+  }
+
   /**
    * Returns an existing user or creates and returns new one
    * @return {Promise}
@@ -169,6 +183,7 @@ function UserSettingsFactory($q, $http, Spotify, AuthFactory) {
   return {
     checkIfUserExistsOnLogin,
     modifyExistingUser,
+    modifyExistingUserWithPut,
     getAllOtherUsersFromFirebase,
     getCurrentUser,
     setCurrentUser,
