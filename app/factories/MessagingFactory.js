@@ -137,9 +137,9 @@ function MessagingFactory($q, $http, UserSettingsFactory) {
     });
   }
 
-  function deleteConversation(fbKey) {
+  function deleteConversation(messageObj) {
     return $q((resolve, reject) => {
-      $http.delete(`https://brainify-ddc05.firebaseio.com/conversations/${modifiedObj.fbKey}.json`)
+      $http.delete(`https://brainify-ddc05.firebaseio.com/conversations/${messageObj.fbKey}.json`)
         .success((response) => {
           console.log('Success! Removed message from Firebase:', response);
           resolve(response);
@@ -148,6 +148,32 @@ function MessagingFactory($q, $http, UserSettingsFactory) {
           console.error('Failed to delete message from Firebase:', error);
           reject(error);
         });
+    })
+    .then((response) => {
+      return $q.all(
+        messageObj.users.map(uid => UserSettingsFactory.getUserFromFirebase(uid))
+      );
+    })
+    .then((usersObj) => {
+      const keys = Object.keys(usersObj);
+      let users = keys.map(key => usersObj[key]);
+      users = users.map((user) => {
+        const key = Object.keys(user)[0];
+        console.log('user object before finding index:', user);
+        const index = user[key].message_chains.indexOf(messageObj.fbKey);
+        console.log('index!', index);
+        user[key].message_chains.splice(index, 1);
+        if (user[key].message_chains.length === 0) {
+          delete user[key].message_chains;
+        }
+
+        return user[key];
+      });
+
+      console.log('Users after removing:', users);
+      return $q.all(
+        users.map(user => UserSettingsFactory.modifyExistingUserWithPut(user))
+      );
     });
   }
 
@@ -170,10 +196,14 @@ function MessagingFactory($q, $http, UserSettingsFactory) {
     return UserSettingsFactory.getUserFromFirebase(uid)
       .then((userObj) => {
         const key = Object.keys(userObj)[0];
-        const conversationIds = userObj[key].message_chains;
-        return $q.all(
-          conversationIds.map(id => getConversationById(id))
-        );
+        if (userObj[key].message_chains) {
+          const conversationIds = userObj[key].message_chains;
+          return $q.all(
+            conversationIds.map(id => getConversationById(id))
+          );
+        } else {
+          return $q.reject('No conversations found on user.');
+        }
       })
       .then((conversations) => {
         userConversations = conversations;
@@ -214,6 +244,10 @@ function MessagingFactory($q, $http, UserSettingsFactory) {
         console.log(userConversations);
 
         return $q.resolve(userConversations);
+      })
+      .catch((error) => {
+        console.error('Failed to find conversations:', error);
+        return $q.resolve([]);
       });
   }
 
