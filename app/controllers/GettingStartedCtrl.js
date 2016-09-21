@@ -8,23 +8,25 @@ function GettingStartedController($scope, $location, $route, PlaylistsFactory, U
 
   $scope.showOtherUserPlaylists = false;
 
-  $scope.searchUser = () => {
-    if ($scope.searchedUser !== '') {
-      console.log(`Searching for user: ${$scope.searchedUser}`);
-      const foundUser = $scope.allOtherUsersList.filter((user) => {
-        return $scope.searchedUser === user.display_name;
-      })[0];
+  $scope.searchUser = (e) => {
+    if (e.keyCode === 13) {
+      if ($scope.searchedUser !== '') {
+        console.log(`Searching for user: ${$scope.searchedUser}`);
+        const foundUser = $scope.allOtherUsersList.filter((user) => {
+          return $scope.searchedUser === user.display_name;
+        })[0];
 
-      if (foundUser) {
-        console.log(`Found a user with name ${$scope.searchedUser}:`, foundUser);
-        PlaylistsFactory.setOtherUser(foundUser);
-        PlaylistsFactory.getOtherUserInfo(foundUser)
-          .then((otherUser) => {
-            $scope.otherUser = otherUser;
-            $scope.showOtherUserPlaylists = true;
-          });
+        if (foundUser) {
+          console.log(`Found a user with name ${$scope.searchedUser}:`, foundUser);
+          PlaylistsFactory.setOtherUser(foundUser);
+          PlaylistsFactory.getOtherUserInfo(foundUser)
+            .then((otherUser) => {
+              $scope.otherUser = otherUser;
+              $scope.showOtherUserPlaylists = true;
+            });
+        }
+        $scope.searchedUser = '';
       }
-      $scope.searchedUser = '';
     }
   };
 
@@ -55,7 +57,7 @@ function GettingStartedController($scope, $location, $route, PlaylistsFactory, U
   $scope.setSelectedPlaylist = (playlistId) => {
     PlaylistsFactory.setSelectedPlaylist(playlistId);
     // Reroute
-    $location.url('/test');
+    $location.url('/test-a-playlist');
   };
 
   $scope.goToGettingStarted = () => {

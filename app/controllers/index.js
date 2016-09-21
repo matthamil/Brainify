@@ -7,7 +7,6 @@ angular.module('Brainify').controller('GettingStartedCtrl', require('./GettingSt
 angular.module('Brainify').controller('LearningCtrl', require('./LearningCtrl'));
 angular.module('Brainify').controller('SendMessageCtrl', require('./SendMessageCtrl'));
 angular.module('Brainify').controller('FirebaseLoginCtrl', require('./FirebaseLoginCtrl'));
-angular.module('Brainify').controller('UserSettingsCtrl', require('./UserSettingsCtrl'));
 angular.module('Brainify').controller('ViewMessagesCtrl', require('./ViewMessagesCtrl'));
 angular.module('Brainify').controller('ViewConversationCtrl', require('./ViewConversationCtrl'));
 console.info('Loaded Brainify controllers');

@@ -3,7 +3,7 @@
 const firebase = require('firebase');
 const moment = require('moment');
 
-function SendMessageController($scope, $sce, $uibModalInstance, otherUser, song, playlist, score, user, PlaylistsFactory, MessagingFactory, UserSettingsFactory) {
+function SendMessageController($scope, $sce, $uibModalInstance, toastr, otherUser, song, playlist, score, user, PlaylistsFactory, MessagingFactory, UserSettingsFactory) {
   $scope.otherUser = otherUser;
 
   $scope.song = song;
@@ -14,11 +14,12 @@ function SendMessageController($scope, $sce, $uibModalInstance, otherUser, song,
     songid: song.id,
     read: false,
     network_score: score,
+    preview_url: song.preview_url,
     author_id: firebase.auth().currentUser.uid,
     author_name: UserSettingsFactory.getCurrentUser().display_name,
     author_image: UserSettingsFactory.getCurrentUser().image,
     text: '',
-  }
+  };
 
   function setPredefinedMessage() {
     if (Math.round(score)) {
@@ -46,6 +47,8 @@ function SendMessageController($scope, $sce, $uibModalInstance, otherUser, song,
     console.log('Sending your message!', message);
     console.log(song);
     MessagingFactory.addMessageToChain(message); // always starts new convo
+    toastr.success(`Sent ${otherUser.display_name} a message!`);
+    console.log(toastr);
     $uibModalInstance.close();
     $scope.messageContent = {};
   };

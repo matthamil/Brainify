@@ -40,16 +40,7 @@ function AppRoutes($routeProvider) {
         }
       }
     })
-    // .when('/settings', {
-    //   templateUrl: 'partials/user-settings.html',
-    //   controller: 'UserSettingsCtrl',
-    //   resolve: {
-    //     user: function (UserSettingsFactory) {
-    //       return UserSettingsFactory.getCurrentUser();
-    //     }
-    //   }
-    // })
-    .when('/test', {
+    .when('/test-a-playlist', {
       templateUrl: 'partials/learning-test.html',
       controller: 'LearningCtrl',
       resolve: {
