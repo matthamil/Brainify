@@ -1,0 +1,47 @@
+#messages-wrapper {
+  .messages-title {
+    font-size: 2em;
+    color: $lightergray;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+  }
+
+  .messages {
+    p {
+      color: white;
+    }
+  }
+}
+
+.lightgray-text {
+  color: $lightergray;
+}
+
+#conversation-wrapper {
+  h1 {
+    color: white;
+  }
+
+  .row {
+    border-bottom: 1px solid $lightgray;
+    padding: 20px 0;
+  }
+}
+
+.other-user-img {
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 2vh;
+}
+
+.other-user-info-wrapper {
+  background-color: darken($button-color, 20%);
+  padding: 2vh 0;
+  text-align: center;
+  margin-bottom: 7vh;
+}

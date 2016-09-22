@@ -67,6 +67,7 @@
   min-width: 30vw;
   display: block;
   margin: 0 auto;
+  margin-bottom: 5vh;
 }
 
 .song-list {
@@ -93,4 +94,132 @@
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
    border-bottom: 0.5px solid $lightgray;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  align-items: center;
+}
+
+.score-btn {
+  font-family: 'Open Sans';
+  border-radius: 25px;
+  padding: 15px 20px;
+  margin: 5px;
+  border: none;
+  font-size: 0.75em;
+  box-shadow: none;
+  border: none;
+  letter-spacing: 1px;
+}
+
+.correct-btn {
+  background-color: $spotify-green;
+  &:hover {
+    background-color: darken($spotify-green, 10%);
+  }
+
+  &:active {
+    background-color: darken($spotify-green, 20%);
+  }
+
+  &:focus {
+    outline:0; box-shadow: 0 0 5px lighten($spotify-green, 20%);
+  }
+}
+
+.wrong-btn {
+  background-color: $spotify-red;
+  transition-duration: 7s;
+  transition-property: box-shadow;
+  &:hover {
+    background-color: darken($spotify-red, 10%);
+  }
+
+  &:active {
+    background-color: darken($spotify-red, 20%);
+    box-shadow: 0 0 50px lighten($spotify-red, 20%);
+  }
+
+  &:focus {
+    outline:0;
+    box-shadow: 0 0 50px lighten($spotify-red, 20%);
+  }
+}
+
+.button-group-wrapper {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.network-result {
+  text-align: center;
+  color: white;
+  width: 100%;
+
+  i {
+    font-size: 4em;
+    padding: 20px;
+    border: 10px solid $spotify-green;
+    border-radius: 50%;
+    margin: 20px;
+  }
+
+  #prediction-score {
+    font-size: 2em;
+    display: inline-block;
+    padding: 0 10px;
+  }
+
+  #song-to-predict-name {
+    padding: 30px;
+    color: lighten($lightergray, 10%);
+  }
+
+  .success {
+    color: $spotify-green;
+  }
+}
+
+.add-to-playlist-btn {
+  background-color: #7c25f8;
+  color: white;
+  font-family: 'Open Sans';
+  border-radius: 25px;
+  padding: 15px 20px;
+  margin: 5px;
+  border: none;
+  font-size: 0.75em;
+  box-shadow: none;
+  border: none;
+}
+
+.other-playlists-recommendations {
+  color: lighten($lightergray, 10%);
+  margin: 0 auto;
+  max-width: 30vw;
+  font-size: 0.75em;
+  margin-bottom: 7.5vh;
+
+  td {
+    color: lighten($lightergray, 20%);
+  }
+}
+
+.open-modal-btn {
+  background-color: #7c25f8;
+  color: white;
+  font-family: 'Open Sans';
+  border-radius: 25px;
+  padding: 15px 20px;
+  margin: 5px;
+  border: none;
+  font-size: 0.75em;
+  box-shadow: none;
+  border: none;
+  margin-bottom: 20px;
 }

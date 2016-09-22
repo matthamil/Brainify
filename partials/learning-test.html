@@ -25,7 +25,7 @@
   <div class="clearfix"></div>
 
   <!-- When playlist initially loads -->
-  <div class="learned-notification">
+  <div class="learned-notification" ng-if="!hasSearched">
     <img src="../img/warning-1.svg" alt="Brainify Notification">
     <p>
       Brainify has learned<br/>
@@ -35,40 +35,43 @@
     </p>
   </div>
 
+  <!-- When searching a song -->
+  <div class="network-result" ng-if="hasSearched">
+    <i class="fa fa-thumbs-up success" aria-hidden="true"></i>
+    <div class="button-group-wrapper">
+      <div class="button-group">
+        <button ng-if="!otherUser" ng-show="!clickedCorrectOrWrong" type="button" class="correct-btn score-btn" ng-click="correctGuess()">CORRECT</button>
+        <p ng-show="!clickedCorrectOrWrong" id="prediction-score">{{songPredictionResult.toFixed(2) * 100}}%</p>
+        <button ng-if="!otherUser"  ng-show="!clickedCorrectOrWrong" type="button" on-click-and-hold="hardReset()" ng-click="wrongGuess()" class="wrong-btn score-btn">WRONG</button>
+
+        <div ng-show="clickedCorrectOrWrong">
+          <button type="button" class="add-to-playlist-btn" ng-click="saveToPlaylist()">Add to Playlist</button>
+        </div>
+      </div>
+    </div>
+
+    <p id="song-to-predict-name">{{songToPredictSearchResult.name}} by {{songToPredictSearchResult.artists[0].name}}</p>
+    <button ng-if="otherUser" class="open-modal-btn" ng-click="open()">Recommend this Song</button>
+  </div>
+
   <input type="text" ng-model="songToPredict" ng-keypress="takeAGuess($event)" placeholder="&#xF002; Search for a title" class="nav-search-bar song-search" />
 
-  <div style="display:inline-block;color:white" ng-show="songToPredictSearchResult">{{songToPredictSearchResult.name}} by {{songToPredictSearchResult.artists[0].name}}</div>
-  <div style="display:inline-block" ng-show="correct">
-    <span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:#32CD32"></span>
-  </div>
-  <div style="display:inline-block" ng-show="incorrect">
-    <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:firebrick"></span>
-  </div>
-
-  <button style="display:block" ng-click="open()">MODAL!</button>
-
-  <div>
-    <h1 style="color:white">Score: {{songPredictionResult}}</h1>
-
-    <div ng-show="!otherUser">
-      <button type="button" class="btn btn-success" ng-click="correctGuess()">Correct</button>
-      <button type="button" class="btn btn-danger" ng-click="wrongGuess()">Wrong</button>
-      <button type="button" class="btn btn-danger" ng-click="hardReset()">Reset</button>
+    <div class="other-playlists-recommendations song-list" ng-if="hasSearched">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>OTHER PLAYLISTS</th>
+            <th>SCORE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="predictions in allOtherNetworkPredictions">
+            <td>{{predictions.name}}</td>
+            <td>{{predictions.result.toFixed(2) * 100}}%</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <div ng-show="clickedCorrectOrWrong">
-      <button type="button" class="btn btn-success" ng-click="saveToPlaylist()">Save to Playlist</button>
-    </div>
-  </div>
-
-  <div>
-    <h1 style="color:white">Scores for other playlists:</h1>
-    <ul>
-      <li style="color:white" ng-repeat="predictions in allOtherNetworkPredictions">
-        {{predictions.name}}, Score: {{predictions.result}}
-      </li>
-    </ul>
-  </div>
 
   <div class="song-list">
     <table class="table">

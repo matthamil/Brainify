@@ -3,9 +3,11 @@
 const firebase = require('firebase');
 const moment = require('moment');
 
-function ViewConversationController($scope, $sce, $location, conversation, MessagingFactory, UserSettingsFactory) {
+function ViewConversationController($scope, $sce, $location, conversation, PlaylistsFactory, MessagingFactory, UserSettingsFactory) {
   $scope.conversation = conversation;
   $scope.otherUser = Object.assign({}, conversation.otherUser);
+
+  $scope.user = PlaylistsFactory.getSpotifyUser();
 
   const DATABASEREF = firebase.database().ref(`conversations/${conversation.fbKey}`);
 

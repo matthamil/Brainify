@@ -1,6 +1,6 @@
 'use strict';
 
-function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFactory, Spotify, FirebaseFactory) {
+function LearningController($scope, $q, $timeout, $uibModal, toastr, SynapticFactory, PlaylistsFactory, Spotify, FirebaseFactory) {
 
   $scope.playlist = PlaylistsFactory.getSelectedPlaylist();
   console.log($scope.playlist);
@@ -12,6 +12,8 @@ function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFac
   $scope.test = () => {
     console.log('Playlist:', $scope.playlist);
   };
+
+  $scope.hasSearched = false;
 
   // Stores the search results for display in the search results table
   $scope.searchResults = [];
@@ -63,6 +65,7 @@ function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFac
 
   $scope.takeAGuess = (e) => {
     if (e.keyCode === 13) {
+      $scope.clickedCorrectOrWrong = false;
       Spotify.search($scope.songToPredict, 'track', {limit: 1})
         .then((data) => {
           console.log(data);
@@ -74,6 +77,7 @@ function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFac
           return PlaylistsFactory.getAudioFeaturesForSongIds(arr);
         })
         .then((featuresVector) => {
+          $scope.hasSearched = true;
           $scope.predictedSongFeatures = featuresVector[0];
           $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector, $scope.songToPredictSearchResult.id)[0];
           $scope.allOtherNetworkPredictions = SynapticFactory.makePredictionAllOtherNetworks(featuresVector, $scope.songToPredictSearchResult.id);
@@ -90,15 +94,22 @@ function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFac
     }
   };
 
+  $scope.$watch('songToPredict', function listenerForSearch(newValue, oldValue) {
+    if (newValue === '') {
+      // $scope.hasSearched = false;
+      // $scope.clickedCorrectOrWrong = false;
+    }
+  });
+
   $scope.clickedCorrectOrWrong = false;
 
   $scope.correctGuess = () => {
+    $scope.clickedCorrectOrWrong = true;
     SynapticFactory.declareCorrectPrediction(
       $scope.songPredictionResult,
       $scope.predictedSongFeatures,
       $scope.lastSearchResult.id
     );
-    $scope.clickedCorrectOrWrong = true;
     console.log('getNetworkFirebaseObj:', SynapticFactory.getNetworkFirebaseObj());
     PlaylistsFactory.modifyNetwork(SynapticFactory.getNetworkFirebaseObj())
       .then((objFromFirebase) => {
@@ -109,12 +120,12 @@ function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFac
   };
 
   $scope.wrongGuess = () => {
+    $scope.clickedCorrectOrWrong = true;
     SynapticFactory.declareWrongPrediction(
       $scope.songPredictionResult,
       $scope.predictedSongFeatures,
       $scope.lastSearchResult.id
     );
-    $scope.clickedCorrectOrWrong = true;
     PlaylistsFactory.modifyNetwork(SynapticFactory.getNetworkFirebaseObj())
       .then((objFromFirebase) => {
         console.log('Updated network in Firebase after wrong guess:', objFromFirebase);
@@ -124,13 +135,18 @@ function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFac
   };
 
   function setReadyStateForNextSearch() {
-    $scope.songPredictionResult = undefined;
+    // $scope.songPredictionResult = undefined;
     $scope.predictedSongFeatures = undefined;
     $scope.lastSearchResult = undefined;
   }
 
   $scope.hardReset = () => {
-    PlaylistsFactory.resetAndUpdateNetwork();
+    PlaylistsFactory.resetAndUpdateNetwork()
+      .then(() => {
+        toastr.info('The network for this playlist has been reset.');
+        $scope.hasSearched = false;
+        $scope.songToPredict = '';
+      });
   };
 
   $scope.saveToPlaylist = () => {

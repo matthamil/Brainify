@@ -1,8 +1,10 @@
 'use strict';
 
-function ViewMessagesController($scope, $location, MessagingFactory, conversations) {
+function ViewMessagesController($scope, $location, MessagingFactory, PlaylistsFactory, conversations) {
   console.log('in the controller:', conversations);
   $scope.conversations = conversations;
+
+  $scope.user = PlaylistsFactory.getSpotifyUser();
 
   $scope.deleteConversation = (conversation) => {
     return MessagingFactory.deleteConversation(conversation)

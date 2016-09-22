@@ -575,7 +575,7 @@ function PlaylistsFactory($q, $http, Spotify, FirebaseFactory, SynapticFactory) 
    * @return {void}
    */
   function resetAndUpdateNetwork() {
-    deleteNetwork(SynapticFactory.getNetworkFirebaseObj().fbKey)
+    return deleteNetwork(SynapticFactory.getNetworkFirebaseObj().fbKey)
       .then(() => {
         return SynapticFactory.networkResetHard()
       })
