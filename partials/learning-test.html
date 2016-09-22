@@ -1,11 +1,42 @@
-<div id="learning-test-wrapper">
-  <button type="button" ng-click="test()" class="btn btn-default">View Playlist in Console</button>
-  <!-- <button type="button" ng-click="genreTest()" class="btn btn-primary">Train Network Automatically</button> -->
+<div id="learning-test-wrapper" class="container-fluid">
 
-  <br/>
+  <nav class="navbar-main row vertical-align">
+    <div class="col-xs-1"></div>
+    <a href="#/getting-started" class="col-xs-1"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+    <a href="#/messages" class="col-xs-offset-5 col-xs-2"><i class="fa fa-envelope" aria-hidden="true"></i> Messages</a>
+    <div class="col-xs-2 profile-wrapper vertical-align" ng-click="goToGettingStarted()">
+      <img ng-src="{{user.images[0].url}}" class="user-profile" alt="{{user.display_name}}"/>
+      <p>{{user.display_name}}</p>
+    </div>
+    <div class="col-xs-1"></div>
+    <div class="clearfix"></div>
+  </nav>
 
-  <h1 style="text-align:center;color:white">Test the Network</h1>
-  <input type="text" ng-model="songToPredict" placeholder="Search for a title"/>
+  <!--Playlist image and title go here-->
+  <div class="playlist-learning">
+    <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}">
+      <div class="playlist-learning-content">
+        <span>PLAYLIST</span>
+        <h1>{{playlist.name}}</h1>
+        <p>{{playlist.tracks.total}} songs • <a target="_blank" ng-href="{{playlist.external_urls.spotify}}">View in Spotify</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+
+  <!-- When playlist initially loads -->
+  <div class="learned-notification">
+    <img src="../img/warning-1.svg" alt="Brainify Notification">
+    <p>
+      Brainify has learned<br/>
+      from this playlist.<br/>
+      Search for a track to<br/>
+      get Brainify's opinion.
+    </p>
+  </div>
+
+  <input type="text" ng-model="songToPredict" ng-keypress="takeAGuess($event)" placeholder="&#xF002; Search for a title" class="nav-search-bar song-search" />
+
   <div style="display:inline-block;color:white" ng-show="songToPredictSearchResult">{{songToPredictSearchResult.name}} by {{songToPredictSearchResult.artists[0].name}}</div>
   <div style="display:inline-block" ng-show="correct">
     <span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:#32CD32"></span>
@@ -13,11 +44,8 @@
   <div style="display:inline-block" ng-show="incorrect">
     <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:firebrick"></span>
   </div>
-  <button style="display:block" type="button" class="btn btn-default" ng-click="takeAGuess()">
-    Make a Prediction
-  </button>
 
-  <button ng-click="open()">MODAL!</button>
+  <button style="display:block" ng-click="open()">MODAL!</button>
 
   <div>
     <h1 style="color:white">Score: {{songPredictionResult}}</h1>
@@ -42,8 +70,22 @@
     </ul>
   </div>
 
-  <hr>
-  <p style="color:white" ng-repeat="song in playlist.songList.items">
-    {{song.track.name}}
-  </p>
+  <div class="song-list">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>SONG</th>
+          <th>ALBUM</th>
+          <th>ARTIST</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="song in playlist.songList.items">
+          <td>{{song.track.name}}</td>
+          <td>{{song.track.album.name}}</td>
+          <td>{{song.track.artists[0].name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

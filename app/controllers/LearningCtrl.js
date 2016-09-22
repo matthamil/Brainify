@@ -3,8 +3,10 @@
 function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFactory, Spotify, FirebaseFactory) {
 
   $scope.playlist = PlaylistsFactory.getSelectedPlaylist();
+  console.log($scope.playlist);
 
   const user = PlaylistsFactory.getSpotifyUser();
+  $scope.user = user;
   $scope.otherUser = PlaylistsFactory.getOtherUser();
 
   $scope.test = () => {
@@ -59,31 +61,33 @@ function LearningController($scope, $q, $uibModal, SynapticFactory, PlaylistsFac
 
   $scope.showHowToFix = false;
 
-  $scope.takeAGuess = () => {
-    Spotify.search($scope.songToPredict, 'track', {limit: 1})
-      .then((data) => {
-        console.log(data);
-        $scope.lastSearchResult = data.tracks.items[0];
-        $scope.songToPredictSearchResult = data.tracks.items[0];
-        return $q.resolve([data.tracks.items[0].id]);
-      })
-      .then((arr) => {
-        return PlaylistsFactory.getAudioFeaturesForSongIds(arr);
-      })
-      .then((featuresVector) => {
-        $scope.predictedSongFeatures = featuresVector[0];
-        $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector, $scope.songToPredictSearchResult.id)[0];
-        $scope.allOtherNetworkPredictions = SynapticFactory.makePredictionAllOtherNetworks(featuresVector, $scope.songToPredictSearchResult.id);
-        $scope.didPredict = true;
-        console.log('Prediction:', $scope.songPredictionResult);
-        if (Math.round($scope.songPredictionResult)) {
-          $scope.correct = true
-          $scope.incorrect = false;
-        } else {
-          $scope.incorrect = true;
-          $scope.correct = false;
-        }
-      });
+  $scope.takeAGuess = (e) => {
+    if (e.keyCode === 13) {
+      Spotify.search($scope.songToPredict, 'track', {limit: 1})
+        .then((data) => {
+          console.log(data);
+          $scope.lastSearchResult = data.tracks.items[0];
+          $scope.songToPredictSearchResult = data.tracks.items[0];
+          return $q.resolve([data.tracks.items[0].id]);
+        })
+        .then((arr) => {
+          return PlaylistsFactory.getAudioFeaturesForSongIds(arr);
+        })
+        .then((featuresVector) => {
+          $scope.predictedSongFeatures = featuresVector[0];
+          $scope.songPredictionResult = SynapticFactory.makePrediction(featuresVector, $scope.songToPredictSearchResult.id)[0];
+          $scope.allOtherNetworkPredictions = SynapticFactory.makePredictionAllOtherNetworks(featuresVector, $scope.songToPredictSearchResult.id);
+          $scope.didPredict = true;
+          console.log('Prediction:', $scope.songPredictionResult);
+          if (Math.round($scope.songPredictionResult)) {
+            $scope.correct = true
+            $scope.incorrect = false;
+          } else {
+            $scope.incorrect = true;
+            $scope.correct = false;
+          }
+        });
+    }
   };
 
   $scope.clickedCorrectOrWrong = false;

@@ -1,0 +1,96 @@
+.playlist-learning {
+  margin-top: 5vh;
+  position: relative;
+  left: 30%;
+  img {
+    float: left;
+    margin-right: 10px;
+    display: inline-block;
+    height: 12vh;
+    width: 12vh;
+  }
+  .playlist-learning-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 12vh;
+    float: left;
+    span {
+        color: $lightergray;
+        font-size: 0.5em;
+        letter-spacing: 2px;
+      }
+
+      p {
+        color: $lightergray;
+        font-size: 0.75em;
+      }
+
+      h1 {
+        color: white;
+        font-size: 1.75em;
+        margin-bottom: 10px;
+      }
+
+      a {
+        color: white;
+        text-decoration: none;
+
+        &:hover,
+        &:visited {
+          color: white;
+        }
+      }
+  }
+}
+
+.learned-notification {
+  display: flex;
+  flex-direction: column;
+
+  img {
+    height: 12vh;
+    width: 12vh;
+    margin: 0 auto;
+    margin-top: 3vh;
+  }
+
+  p {
+    color: white;
+    line-height: 1.5;
+    margin: 0 auto;
+    margin-bottom: 4vh;
+  }
+}
+
+.song-search {
+  min-width: 30vw;
+  display: block;
+  margin: 0 auto;
+}
+
+.song-list {
+  color: white;
+}
+
+.table {
+  max-width: 75%;
+  margin: 0 auto;
+  thead {
+    color: $lightergray;
+    font-size: 0.75em;
+    letter-spacing: 2px;
+  }
+  td {
+    color: lighten($lightergray, 20%);
+  }
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+   border-bottom: 0.5px solid $lightgray;
+}

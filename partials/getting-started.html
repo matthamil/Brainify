@@ -1,20 +1,17 @@
 <span us-spinner="{color: '#7c25f8'}" spinner-on="showSpinner"></span>
 
-<div id="getting-started-wrapper" ng-init="loadUserInfo()" ng-show="!showSpinner">
-  <nav>
-    <input type="text" style="float:left; margin-top: 3.5vh; margin-left: 30vw; border-radius: 25px; padding: 5px 20px; border:none; font-size: 0.75em" placeholder="Search for a user" ng-model="searchedUser" ng-keypress="searchUser($event)">
-    <a href="#/messages">Messages</a>
-    <div class="current-user" ng-click="goToGettingStarted()">
-      <a>
-        <ul>
-          <li>{{user.display_name}}</li>
-        </ul>
-        <img ng-src="{{user.images[0].url}}" class="user-profile" alt="{{user.display_name}}"/>
-      </a>
+<div id="getting-started-wrapper" ng-init="loadUserInfo()" ng-show="!showSpinner" class="container-fluid">
+  <nav class="row vertical-align">
+    <input type="text" class="nav-search-bar col-xs-offset-4 col-xs-3" placeholder="&#xF002; Search for a user" ng-model="searchedUser" ng-keypress="searchUser($event)">
+    <a href="#/messages" class="col-xs-2"><i class="fa fa-envelope" aria-hidden="true"></i> Messages</a>
+    <div class="col-xs-2 profile-wrapper vertical-align" ng-click="goToGettingStarted()">
+      <img ng-src="{{user.images[0].url}}" class="user-profile" alt="{{user.display_name}}"/>
+      <p>{{user.display_name}}</p>
     </div>
+    <div class="col-xs-1"></div>
     <div class="clearfix"></div>
   </nav>
-  <div class="content-area">
+  <div class="content-area col-xs-offset-4 col-xs-4 col-xs-offset-4">
     <h1>
       Select a<br/>
       playlist<br/>
@@ -24,28 +21,24 @@
   </div>
 
   <div ng-if="!showOtherUserPlaylists">
-    <div class="playlists-area">
+    <div class="playlists-area col-xs-offset-4 col-xs-4 col-xs-offset-4">
       <h3>Your Playlists:</h3>
       <hr/>
-      <div ng-repeat="playlist in user.playlists" class="playlist" ng-click="setSelectedPlaylist(playlist.id)">
+      <div ng-repeat="playlist in user.playlists" class="playlist v-align-only" ng-click="setSelectedPlaylist(playlist.id)">
         <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}"/>
-        <ul>
-          <li>{{playlist.name}}</li>
-        </ul>
+        <p>{{playlist.name}}</p>
         <div class="clearfix"></div>
       </div>
     </div>
   </div>
 
   <div ng-if="showOtherUserPlaylists">
-    <div class="playlists-area">
+    <div class="playlists-area col-xs-offset-4 col-xs-4 col-xs-offset-4">
       <h3>{{otherUser.display_name}}'s Playlists:</h3>
       <hr/>
-      <div ng-repeat="playlist in otherUser.playlists" class="playlist" ng-click="setSelectedPlaylist(playlist.id)">
+      <div ng-repeat="playlist in otherUser.playlists" class="playlist v-align-only" ng-click="setSelectedPlaylist(playlist.id)">
         <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}"/>
-        <ul>
-          <li>{{playlist.name}}</li>
-        </ul>
+        <p>{{playlist.name}}</p>
         <div class="clearfix"></div>
       </div>
     </div>
