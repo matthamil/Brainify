@@ -18,6 +18,8 @@ const MODULE_NAME = 'Brainify';
 
 let app = angular.module(MODULE_NAME, ['ngRoute', 'ngAnimate', 'ngSanitize', 'ui.bootstrap', modal, 'toastr', 'angularSpinner', 'spotify']);
 
+// Loading Directives
+require('./directives');
 // Loading Controllers
 require('./controllers');
 // Loading Factories

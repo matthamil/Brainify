@@ -1,6 +1,9 @@
+@import '../node_modules/font-awesome/scss/font-awesome.scss';
 @import 'reset';
 @import 'theme-colors';
 @import 'getting-started';
+@import 'learning-test';
+@import 'conversations';
 @import '../node_modules/angular-ui-bootstrap/src/position/position.scss';
 @import '../node_modules/angular-toastr/dist/angular-toastr.scss';
 
@@ -11,6 +14,10 @@
   transform: translate(-50%, -50%);
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
   background-color: $darkgray;
@@ -19,13 +26,6 @@ body {
 *::selection {
   background-color: $salmon-color;
   color: white;
-}
-
-
-input::focus {
-  outline: none !important;
-  box-shadow: none;
-  -webkit-appearance: none;
 }
 
 .clearfix {
@@ -44,13 +44,16 @@ input::focus {
     font-weight: 800;
     font-size: 4.5em;
     display: block;
-    margin: 7.5% auto 4%;
-    max-width: 50%;
     line-height: 1.05;
   }
 }
 
+#landing-page-content-area {
+  margin-top: 10vh;
+}
+
 #landing-page-navbar {
+  position: relative;
   background-color: $navbar-transparent;
   min-height: 15vh;
   font-size: 1.25em;
@@ -58,23 +61,34 @@ input::focus {
 
   a {
     color: white;
-    // float: right;
   }
 
   li {
     display: block;
-    float: right;
-    margin: 5.5vh 20px;
+    // float: right;
+    // margin: 5.5vh 20px;
   }
 
   #navbar-logo-wrapper {
-    float: left;
-    margin: 3vh 0;
+    // float: left;
+    // margin: 3vh 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   #navbar-logo {
     height: 8vh; width: 8vh;
-    float: left;
+    // float: left;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #sign-in-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   img {
@@ -82,13 +96,17 @@ input::focus {
   }
 
   h2 {
-    float: left;
+    // float: left;
     font-size: 1.25em;
     font-weight: 700;
     display: block;
     letter-spacing: -1px;
-    margin: 2.25vh 0;
-    margin-left: 5px;
+    // margin: 2.25vh 0;
+    // margin-left: 5px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 12vh;
   }
 
 }
@@ -120,6 +138,7 @@ input::focus {
   margin: 0 auto;
   font-size: 1.5em;
   margin-bottom: 10vh;
+  margin-top: 5vh;
 }
 
 .landing-page-tab-wrapper {
@@ -141,5 +160,28 @@ input::focus {
 
   &:hover {
     cursor: pointer;
+  }
+}
+
+#warning-icon {
+  color: #ffc864;
+}
+
+.spotify-connect {
+  cursor: pointer;
+  color: lighten($lightergray, 10%);
+  position: relative;
+  min-height: 100vh;
+  background-image: url(../img/Spotify_logo_without_text.png);
+  background-size: 30vh 30vh;
+  background-repeat: no-repeat;
+  background-position: center 25vh;
+  h1 {
+    font-weight: 700;
+    font-size: 2em;
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }

@@ -1,7 +1,26 @@
-<div ng-repeat="conversation in conversations">
-  <div ng-click="goToConversation(conversation)">
-    <h1>Conversation with {{conversation.otherUser.display_name}}</h1>
-    <img ng-src="{{conversation.otherUser.image}}">
+<div id="messages-wrapper" class="container-fluid">
+  <nav class="navbar-main row vertical-align">
+    <div class="col-xs-1"></div>
+    <a href="#/getting-started" class="col-xs-1"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+    <div class="col-xs-offset-7"></div>
+    <div class="col-xs-2 profile-wrapper vertical-align">
+      <img ng-src="{{user.images[0].url}}" class="user-profile" alt="{{user.display_name}}"/>
+      <p>{{user.display_name}}</p>
+    </div>
+    <div class="col-xs-1"></div>
+    <div class="clearfix"></div>
+  </nav>
+
+  <h1 class="messages-title">Messages</h1>
+
+  <div ng-repeat="conversation in conversations" class="row">
+    <div class="col-xs-1"></div>
+    <div ng-click="goToConversation(conversation)">
+      <img ng-src="{{conversation.otherUser.image}}" class="col-xs-2">
+      <p class="col-xs-6 lightgray-text">{{conversation.otherUser.display_name}}</p>
+    </div>
+    <button type="button" class="btn btn-danger col-xs-2" ng-click="deleteConversation(conversation)">Delete</button>
+    <div class="col-xs-1"></div>
   </div>
-  <button type="button" class="btn btn-danger" ng-click="deleteConversation(conversation)">Delete</button>
+
 </div>

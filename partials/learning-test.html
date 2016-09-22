@@ -1,49 +1,94 @@
-<div id="learning-test-wrapper">
-  <button type="button" ng-click="test()" class="btn btn-default">View Playlist in Console</button>
-  <!-- <button type="button" ng-click="genreTest()" class="btn btn-primary">Train Network Automatically</button> -->
+<div id="learning-test-wrapper" class="container-fluid">
 
-  <br/>
-
-  <h1 style="text-align:center;color:white">Test the Network</h1>
-  <input type="text" ng-model="songToPredict" placeholder="Search for a title"/>
-  <div style="display:inline-block;color:white" ng-show="songToPredictSearchResult">{{songToPredictSearchResult.name}} by {{songToPredictSearchResult.artists[0].name}}</div>
-  <div style="display:inline-block" ng-show="correct">
-    <span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:#32CD32"></span>
-  </div>
-  <div style="display:inline-block" ng-show="incorrect">
-    <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:firebrick"></span>
-  </div>
-  <button style="display:block" type="button" class="btn btn-default" ng-click="takeAGuess()">
-    Make a Prediction
-  </button>
-
-  <button ng-click="open()">MODAL!</button>
-
-  <div>
-    <h1 style="color:white">Score: {{songPredictionResult}}</h1>
-
-    <div ng-show="!otherUser">
-      <button type="button" class="btn btn-success" ng-click="correctGuess()">Correct</button>
-      <button type="button" class="btn btn-danger" ng-click="wrongGuess()">Wrong</button>
-      <button type="button" class="btn btn-danger" ng-click="hardReset()">Reset</button>
+  <nav class="navbar-main row vertical-align">
+    <div class="col-xs-1"></div>
+    <a href="#/getting-started" class="col-xs-1"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+    <a href="#/messages" class="col-xs-offset-5 col-xs-2"><i class="fa fa-envelope" aria-hidden="true"></i> Messages</a>
+    <div class="col-xs-2 profile-wrapper vertical-align" ng-click="goToGettingStarted()">
+      <img ng-src="{{user.images[0].url}}" class="user-profile" alt="{{user.display_name}}"/>
+      <p>{{user.display_name}}</p>
     </div>
+    <div class="col-xs-1"></div>
+    <div class="clearfix"></div>
+  </nav>
 
-    <div ng-show="clickedCorrectOrWrong">
-      <button type="button" class="btn btn-success" ng-click="saveToPlaylist()">Save to Playlist</button>
+  <!--Playlist image and title go here-->
+  <div class="playlist-learning">
+    <img ng-src="{{playlist.images[0].url}}" alt="{{playlist.name}}">
+      <div class="playlist-learning-content">
+        <span>PLAYLIST</span>
+        <h1>{{playlist.name}}</h1>
+        <p>{{playlist.tracks.total}} songs • <a target="_blank" ng-href="{{playlist.external_urls.spotify}}">View in Spotify</a></p>
+      </div>
     </div>
   </div>
+  <div class="clearfix"></div>
 
-  <div>
-    <h1 style="color:white">Scores for other playlists:</h1>
-    <ul>
-      <li style="color:white" ng-repeat="predictions in allOtherNetworkPredictions">
-        {{predictions.name}}, Score: {{predictions.result}}
-      </li>
-    </ul>
+  <!-- When playlist initially loads -->
+  <div class="learned-notification" ng-if="!hasSearched">
+    <img src="../img/warning-1.svg" alt="Brainify Notification">
+    <p>
+      Brainify has learned<br/>
+      from this playlist.<br/>
+      Search for a track to<br/>
+      get Brainify's opinion.
+    </p>
   </div>
 
-  <hr>
-  <p style="color:white" ng-repeat="song in playlist.songList.items">
-    {{song.track.name}}
-  </p>
+  <!-- When searching a song -->
+  <div class="network-result" ng-if="hasSearched">
+    <i class="fa fa-thumbs-up success" aria-hidden="true"></i>
+    <div class="button-group-wrapper">
+      <div class="button-group">
+        <button ng-if="!otherUser" ng-show="!clickedCorrectOrWrong" type="button" class="correct-btn score-btn" ng-click="correctGuess()">CORRECT</button>
+        <p ng-show="!clickedCorrectOrWrong" id="prediction-score">{{songPredictionResult.toFixed(2) * 100}}%</p>
+        <button ng-if="!otherUser"  ng-show="!clickedCorrectOrWrong" type="button" on-click-and-hold="hardReset()" ng-click="wrongGuess()" class="wrong-btn score-btn">WRONG</button>
+
+        <div ng-show="clickedCorrectOrWrong">
+          <button type="button" class="add-to-playlist-btn" ng-click="saveToPlaylist()">Add to Playlist</button>
+        </div>
+      </div>
+    </div>
+
+    <p id="song-to-predict-name">{{songToPredictSearchResult.name}} by {{songToPredictSearchResult.artists[0].name}}</p>
+    <button ng-if="otherUser" class="open-modal-btn" ng-click="open()">Recommend this Song</button>
+  </div>
+
+  <input type="text" ng-model="songToPredict" ng-keypress="takeAGuess($event)" placeholder="&#xF002; Search for a title" class="nav-search-bar song-search" />
+
+    <div class="other-playlists-recommendations song-list" ng-if="hasSearched">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>OTHER PLAYLISTS</th>
+            <th>SCORE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="predictions in allOtherNetworkPredictions">
+            <td>{{predictions.name}}</td>
+            <td>{{predictions.result.toFixed(2) * 100}}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  <div class="song-list">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>SONG</th>
+          <th>ALBUM</th>
+          <th>ARTIST</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="song in playlist.songList.items">
+          <td>{{song.track.name}}</td>
+          <td>{{song.track.album.name}}</td>
+          <td>{{song.track.artists[0].name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

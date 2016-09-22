@@ -24,7 +24,8 @@
     "query-string": "^4.2.3",
     "angular-spotify": "^1.4.2",
     "synaptic": "^1.0.8",
-    "angular-spinner": "^0.8.1"
+    "angular-spinner": "^0.8.1",
+    "bootstrap-social": "^5.0.0"
   },
   "resolutions": {
     "query-string": "^1.0.0"
