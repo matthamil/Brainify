@@ -164,7 +164,6 @@
   i {
     font-size: 4em;
     padding: 20px;
-    border: 10px solid $spotify-green;
     border-radius: 50%;
     margin: 20px;
   }
@@ -182,6 +181,12 @@
 
   .success {
     color: $spotify-green;
+    border: 10px solid $spotify-green;
+  }
+
+  .failure {
+    color: $spotify-red;
+    border: 10px solid $spotify-red;
   }
 }
 

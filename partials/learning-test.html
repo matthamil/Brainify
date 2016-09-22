@@ -37,7 +37,8 @@
 
   <!-- When searching a song -->
   <div class="network-result" ng-if="hasSearched">
-    <i class="fa fa-thumbs-up success" aria-hidden="true"></i>
+    <i ng-if="correct" class="fa fa-thumbs-up success" aria-hidden="true"></i>
+    <i ng-if="incorrect" class="fa fa-thumbs-down failure" aria-hidden="true"></i>
     <div class="button-group-wrapper">
       <div class="button-group">
         <button ng-if="!otherUser" ng-show="!clickedCorrectOrWrong" type="button" class="correct-btn score-btn" ng-click="correctGuess()">CORRECT</button>
