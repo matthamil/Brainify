@@ -1,16 +1,10 @@
-# Brainify 
+# Brainify
 
 Brainify creates smart Spotify playlists using machine learning techniques.
 
 ![Brainify Mockup](https://i.imgur.com/2XcyWcX.jpg)
 
-![Brainify Logged in Mockup](https://i.imgur.com/l5dN5g6.jpg)
-
-![Playlist Page](https://i.imgur.com/5Imrwu8.png)
-
-![After a Search](https://i.imgur.com/JZaYwAQ.png)
-
-![After user judges Brainify's decision](https://i.imgur.com/VKngrbJ.png)
+[Mockups](https://imgur.com/a/1vKQx)
 
 ## Getting Started
 
