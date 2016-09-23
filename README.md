@@ -1,4 +1,4 @@
-# Brainify (Work in Progress)
+# Brainify 
 
 Brainify creates smart Spotify playlists using machine learning techniques.
 
