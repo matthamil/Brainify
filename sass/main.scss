@@ -28,6 +28,19 @@ body {
   color: white;
 }
 
+.hidden {
+  display: none;
+}
+
+.nonlink {
+  color: white;
+  text-decoration: none;
+  &:hover {
+    text-decoration: none;
+    color: white;
+  }
+}
+
 .clearfix {
   clear: both;
 }

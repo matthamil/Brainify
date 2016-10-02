@@ -41,9 +41,9 @@
     <i ng-if="incorrect" class="fa fa-thumbs-down failure" aria-hidden="true"></i>
     <div class="button-group-wrapper">
       <div class="button-group">
-        <button ng-if="!otherUser" ng-show="!clickedCorrectOrWrong" type="button" class="correct-btn score-btn" ng-click="correctGuess()">CORRECT</button>
-        <p ng-show="!clickedCorrectOrWrong" id="prediction-score">{{songPredictionResult.toFixed(2) * 100}}%</p>
-        <button ng-if="!otherUser"  ng-show="!clickedCorrectOrWrong" type="button" on-click-and-hold="hardReset()" ng-click="wrongGuess()" class="wrong-btn score-btn">WRONG</button>
+        <button ng-class="{hidden: clickedCorrectOrWrong || otherUser}" type="button" class="correct-btn score-btn" ng-click="correctGuess()">CORRECT</button>
+        <p ng-class="{hidden: clickedCorrectOrWrong}" id="prediction-score">{{songPredictionResult.toFixed(2) * 100}}%</p>
+        <button type="button" on-click-and-hold="hardReset()" ng-class="{hidden: clickedCorrectOrWrong || otherUser}" ng-click="wrongGuess()" class="wrong-btn score-btn">WRONG</button>
 
         <div ng-show="clickedCorrectOrWrong">
           <button type="button" class="add-to-playlist-btn" ng-click="saveToPlaylist()">Add to Playlist</button>
