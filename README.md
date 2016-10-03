@@ -2,6 +2,8 @@
 
 Brainify creates smart Spotify playlists using machine learning techniques.
 
+[Read the blog post about Brainify](http://matthamil.me/Machine-Learning-with_JavaScript/)
+
 ![Brainify Mockup](https://i.imgur.com/2XcyWcX.jpg)
 
 [Mockups](https://imgur.com/a/1vKQx)
