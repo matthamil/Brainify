@@ -14,7 +14,7 @@ Download or clone the project to your machine. You will need a [Spotify API key]
 
 Create a `SpotifyConfig.js` file inside the `app` directory with the following:
 
-```
+```javascript
 'use strict';
 
 function SpotifyAPISetup(SpotifyProvider) {
@@ -30,7 +30,7 @@ Firebase configuration settings are not included in this repo.
 
 Install the dependencies:
 
-```
+```bash
 npm install
 ```
 
