@@ -1,5 +1,7 @@
 # Brainify
 
+[![Dependency Status](https://david-dm.org/matthamil/Brainify/status.svg)](https://david-dm.org/matthamil/Brainify#info=dependencies) [![devDependency Status](https://david-dm.org/matthamil/Brainify/dev-status.svg)](https://david-dm.org/preboot/angular-webpack#info=devDependencies)
+
 Brainify creates smart Spotify playlists using machine learning techniques.
 
 [Read the blog post about Brainify](http://matthamil.me/Machine-Learning-with_JavaScript/)
