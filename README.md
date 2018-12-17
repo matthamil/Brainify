@@ -1,6 +1,6 @@
 # Brainify
 
-[![Dependency Status](https://david-dm.org/matthamil/Brainify/status.svg)](https://david-dm.org/matthamil/Brainify#info=dependencies) [![devDependency Status](https://david-dm.org/matthamil/Brainify/dev-status.svg)](https://david-dm.org/preboot/angular-webpack#info=devDependencies)
+[![Dependency Status](https://david-dm.org/matthamil/Brainify/status.svg)](https://david-dm.org/matthamil/Brainify#info=dependencies) [![devDependency Status](https://david-dm.org/matthamil/Brainify/dev-status.svg)](https://david-dm.org/preboot/angular-webpack#info=devDependencies) [![Greenkeeper badge](https://badges.greenkeeper.io/matthamil/Brainify.svg)](https://greenkeeper.io/)
 
 Brainify creates smart Spotify playlists using machine learning techniques.
 
